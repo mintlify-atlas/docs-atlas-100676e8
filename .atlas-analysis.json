@@ -1,0 +1,102 @@
+{
+  "projectType": "general",
+  "projectName": "Vault",
+  "projectDescription": "A collection of cross-platform security, networking, and system administration tools for Windows and Linux",
+  "theme": "aspen",
+  "primaryColor": "#c0c1c1",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "installation"
+            ]
+          },
+          {
+            "group": "Security Tools",
+            "pages": [
+              "security/blackusb",
+              "security/dextroyer",
+              "security/blackshield"
+            ]
+          },
+          {
+            "group": "Network & Proxy",
+            "pages": [
+              "network/gateproxy",
+              "network/proxymon",
+              "network/ddos"
+            ]
+          },
+          {
+            "group": "System Administration",
+            "pages": [
+              "sysadmin/itsm",
+              "sysadmin/netscan",
+              "sysadmin/trek",
+              "sysadmin/uniopos",
+              "sysadmin/dofi"
+            ]
+          },
+          {
+            "group": "Scripts & Utilities",
+            "pages": [
+              "scripts/overview",
+              "scripts/bash",
+              "scripts/batch",
+              "scripts/python",
+              "scripts/vbs"
+            ]
+          },
+          {
+            "group": "Windows Tools",
+            "pages": [
+              "windows/winzenity"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Resources",
+        "groups": [
+          {
+            "group": "Additional Information",
+            "pages": [
+              "resources/contributing",
+              "resources/license",
+              "resources/support"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Cross-platform USB security with BlackUSB (Linux & Windows)",
+    "Automated proxy/firewall deployment with Gateproxy",
+    "Real-time Squid proxy monitoring with ProxyMon",
+    "ITSM installer for iTop and GLPI",
+    "Comprehensive script collection for system administration",
+    "DDoS protection and network security tools",
+    "Malware removal toolkit (Dextroyer)",
+    "Windows GUI tools with WinZenity"
+  ],
+  "publicApiSurface": [
+    "blackusb.sh - USB device whitelisting (show|on|off|eject|gen|del|edit)",
+    "gateproxy.sh - Automated proxy/firewall server installer",
+    "proxymon.sh - Squid proxy monitoring suite (install|uninstall)",
+    "ddosinstall.sh - DDoS deflate installation script",
+    "itsm.exe - ITSM installer for iTop and GLPI",
+    "bash scripts - 50+ system administration scripts",
+    "batch scripts - Windows automation tools",
+    "python scripts - Email scanning, Git folder download, Link checking",
+    "bandata.sh - Bandwidth monitoring and quota management",
+    "squidtool.sh - Squid analysis and reporting"
+  ]
+}
