@@ -1,0 +1,267 @@
+---
+title: ITSM Installer
+description: Automated installer for iTop and GLPI IT Service Management solutions on Windows
+---
+
+# ITSM Installer
+
+ITSM (IT Service Management) is a structured approach to designing, implementing, managing and optimizing information technology services within an organization. This package includes two open source web applications designed for ITSM: **iTop** and **GLPI**.
+
+## Overview
+
+<CardGroup cols={2}>
+  <Card title="iTop" icon="server">
+    All-in-one, open-source ITSM platform with customizable CMDB, incident management, and ITIL-compliant workflows
+  </Card>
+  <Card title="GLPI" icon="ticket">
+    Comprehensive ITSM solution combining inventory management, help desk, and IT asset management with extensible plugins
+  </Card>
+</CardGroup>
+
+## Supported Versions
+
+### ITSM Solutions
+
+- **GLPI** - Version 11.x or later
+- **iTop** - Version 3.2.x or later
+
+### Supported Stacks
+
+The installer supports these web server stacks:
+
+<Tabs>
+  <Tab title="WampServer">
+    **WampServer v3.3.x x64**
+    
+    Installation path: `%HOMEDRIVE%\wamp64`
+    
+    [Download WampServer](https://wampserver.aviatechno.net/)
+  </Tab>
+  <Tab title="XAMPP">
+    **XAMPP v8.2.x x64**
+    
+    Installation path: `%HOMEDRIVE%\xampp`
+    
+    [Download XAMPP](https://sourceforge.net/projects/xampp/files/)
+  </Tab>
+  <Tab title="Uniform Server">
+    **Uniform Server v15.x ZeroXV (UZero)**
+    
+    Installation path: `%HOMEDRIVE%\UniServerZ`
+    
+    [Download Uniform Server](https://sourceforge.net/projects/miniserver/files/)
+  </Tab>
+</Tabs>
+
+### Dependencies
+
+The installer includes all required dependencies:
+
+- Microsoft Visual C++ Redistributable Runtimes
+- Graphviz v14 x64
+- APCu v8.3 x64 ts
+
+## Download
+
+| File | OS | Size |
+| --- | --- | --- |
+| [itsm.exe (.zip)](https://mega.nz/file/DJlwhbAL#inviEXPFGc4W40lBxcYhdmMmCsQxyNzfR25n7vHDy60) | Windows 10/11 x64 | 158.2 MB |
+
+## Installation
+
+<Warning>
+  **Before Installing:** Stop Apache/MySQL services if they are currently running to avoid conflicts.
+</Warning>
+
+<Steps>
+  <Step title="Prepare System">
+    1. Disable Antivirus, Antimalware, and SmartScreen temporarily
+    2. Close all applications
+    3. Verify system date and time are correct
+    4. Stop any running Apache/MySQL services
+  </Step>
+  
+  <Step title="Extract and Run">
+    1. Unzip `itsm.exe (.zip)` to your desktop
+    2. Double-click the executable
+    3. Accept privileged execution when prompted
+  </Step>
+  
+  <Step title="Select ITSM Solution">
+    Choose either **iTop** or **GLPI** when the selection dialog appears
+    
+    ![ITSM Selection](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-select.png)
+  </Step>
+  
+  <Step title="Select Stack">
+    Choose your installed stack (WampServer, XAMPP, or UniServerZ)
+    
+    ![Stack Selection](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-stack.png)
+    
+    The installer will automatically detect the stack at the standard installation path.
+  </Step>
+  
+  <Step title="Wait for Installation">
+    The installer will deploy your selected ITSM solution with all dependencies and configurations.
+    
+    ![Installation Running](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-run.png)
+  </Step>
+  
+  <Step title="Complete Setup">
+    When installation completes, you'll see a success message.
+    
+    ![Installation Complete](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-complete.png)
+    
+    **Important:** Start Apache/MySQL services before proceeding to configuration.
+  </Step>
+</Steps>
+
+## Post-Installation
+
+### Desktop Shortcuts
+
+The installer creates desktop shortcuts for easy access:
+
+![Desktop Icons](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-icons.png)
+
+<Tabs>
+  <Tab title="iTop">
+    **First Launch:**
+    - Double-click `iTop Wizard.url` to start the setup wizard
+    - Complete the iTop configuration wizard
+    - Delete the `iTop Wizard.url` shortcut after setup
+    
+    **Subsequent Access:**
+    - Use `iTop.url` to access the login page
+    - Enter credentials configured during setup
+  </Tab>
+  <Tab title="GLPI">
+    **All Access:**
+    - Use `GLPI.url` for both initial setup and regular access
+    - The same shortcut works for configuration and daily use
+  </Tab>
+</Tabs>
+
+<Note>
+  If shortcuts don't open in your browser, close the browser completely and try again.
+</Note>
+
+### Configuration Wizards
+
+Detailed setup guides are available on your desktop:
+
+- [iTop Wizard PDF](https://raw.githubusercontent.com/maravento/vault/master/itsm/wizard/iTop-Wizard.pdf)
+- [GLPI Wizard PDF](https://raw.githubusercontent.com/maravento/vault/master/itsm/wizard/GLPI-Wizard.pdf)
+
+## Access Configuration
+
+### iTop IP/Port Access
+
+To access iTop via IP address or custom port, download and run the configuration script:
+
+```powershell
+# Download the script
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/maravento/vault/master/itsm/scripts/itopconf.ps1" -OutFile "itopconf.ps1"
+
+# Run with PowerShell (Windows 10)
+Right-click itopconf.ps1 → "Run with PowerShell"
+
+# Windows 11 - If needed, enable script execution:
+Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force
+# Run the script, then restore policy:
+Set-ExecutionPolicy Restricted -Scope CurrentUser -Force
+```
+
+**Access Examples:**
+
+```bash
+http://localhost/itop/web/pages/UI.php
+http://localhost:8080/itop/web/pages/UI.php
+http://192.168.1.10/itop/web/pages/UI.php
+http://192.168.1.10:8080/itop/web/pages/UI.php
+```
+
+### GLPI IP/Port Access
+
+GLPI works without additional configuration. Access examples:
+
+```bash
+http://localhost/glpi
+http://localhost:8080/glpi
+http://192.168.1.10/glpi
+http://192.168.1.10:8080/glpi
+```
+
+<Note>
+  Port changes must be configured in the Apache vhost configuration.
+</Note>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Installation Messages">
+    | Message | Meaning |
+    |---------|----------|
+    | ![Canceled](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-canceled.png) | Installation was canceled or an error occurred |
+    | ![No Stack](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-nostack.png) | No supported stack detected |
+    | ![Incompatible OS](https://raw.githubusercontent.com/maravento/vault/master/itsm/img/itsm-so.png) | Incompatible operating system |
+  </Accordion>
+  
+  <Accordion title="Browser Proxy Issues">
+    If you cannot access the startup or configuration URL, check browser proxy settings or run:
+    
+    ```bash
+    netsh winhttp import proxy source=ie
+    ```
+  </Accordion>
+  
+  <Accordion title="Service Issues">
+    Remember to:
+    - **Stop** Apache/MySQL services before installation
+    - **Start** Apache/MySQL services after installation
+  </Accordion>
+</AccordionGroup>
+
+## System Requirements
+
+- **OS:** Windows 10/11 x64
+- **RAM:** Minimum 4GB recommended
+- **Disk Space:** At least 2GB free space
+- **Prerequisites:** One of the supported stacks installed
+
+## Telemetry
+
+The installer sends anonymous installation completion data for statistical purposes only. No personal data is collected.
+
+**Example telemetry:**
+
+```
+Package Installation
+Hostname=DESKTOP-AJ4JSC8
+User=Usuario
+Date=mié. 13/11/2024 Time= 6:44:17,39
+Status=Installed
+Package: ITSM
+```
+
+## License Information
+
+| Software | License |
+| --- | --- |
+| iTop | ![AGPLv3](https://img.shields.io/badge/License-AGPLv3-blue.svg) |
+| GLPI | ![GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg) |
+
+## Additional Resources
+
+<CardGroup cols={2}>
+  <Card title="iTop Requirements" icon="list-check" href="https://www.itophub.io/wiki/page?id=latest:install:requirements">
+    Official iTop installation requirements
+  </Card>
+  <Card title="GLPI Prerequisites" icon="list-check" href="https://glpi-install.readthedocs.io/en/latest/prerequisites.html">
+    Official GLPI prerequisites guide
+  </Card>
+</CardGroup>
+
+<Note>
+  **Disclaimer:** Maravento Studio has no relationship with iTop or GLPI developers. This installer is an open source project sponsored by [Uniopos SAS](https://co.linkedin.com/in/lancord). Only the sponsor may use it for commercial purposes.
+</Note>

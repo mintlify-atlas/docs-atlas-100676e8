@@ -1,0 +1,260 @@
+---
+title: BlackShield
+description: Block malicious patterns including ransomware, malware, and network threats
+icon: shield-halved
+---
+
+BlackShield is an experimental project designed to block malicious patterns, including file extensions associated with ransomware, malware, scraping, crawlers, bots, circumvention tools, Proxy, BitTorrent, Tor, and other cyber threats. It prevents the spread of these threats using access control lists and custom rules.
+
+<Warning>
+  **Experimental Status**: BlackShield is marked as experimental. Use at your own risk and test thoroughly before deploying in production environments.
+
+  **Result Not Guaranteed**: This project contains files that may generate false positives.
+</Warning>
+
+## Dependencies
+
+```bash
+bash samba squid iptables ulogd2 ipset perl
+```
+
+## Installation
+
+<Steps>
+  <Step title="Install Python">
+    ```bash
+    sudo apt install -y python-is-python3
+    ```
+  </Step>
+
+  <Step title="Download project">
+    ```bash
+    wget -qO gitfolder.py https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+    chmod +x gitfolder.py
+    python gitfolder.py https://github.com/maravento/vault/blackshield
+    ```
+  </Step>
+
+  <Step title="Run BlackShield">
+    ```bash
+    cd blackshield
+    chmod +x blackshield.sh
+    ./blackshield.sh
+    ```
+  </Step>
+
+  <Step title="Install ACL files">
+    ```bash
+    sudo mkdir -p /etc/acl
+    sudo find acl/ -type f -exec cp {} /etc/acl/ \;
+    sudo find /etc/acl/ -type f -exec chmod 644 {} \;
+    ```
+  </Step>
+</Steps>
+
+## Configuration
+
+### Squid Rules
+
+Modify `/etc/squid/squid.conf` and add the following rules:
+
+```bash
+# Block: Ransomware Extensions/Patterns
+acl block_ransomware urlpath_regex -i "/etc/acl/rwext.txt"
+http_access deny block_ransomware
+
+# Block: mime_type
+acl block_mime rep_mime_type -i "/etc/acl/blockmime.txt"
+http_reply_access deny block_mime
+
+# Block: ext
+acl block_ext urlpath_regex -i "/etc/acl/blockext.txt"
+http_access deny block_ext
+
+# Block: punycode
+acl block_punycode dstdom_regex -i \.xn--.*
+http_access deny block_punycode
+
+# Block: Invalid file extensions
+acl invalid_ext urlpath_regex -i \.[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$
+http_access deny invalid_ext
+
+# Block: patterns
+acl blockpatterns url_regex -i "/etc/acl/blockpatterns.txt"
+http_access deny workdays blockpatterns
+
+# Block: User-Agents
+acl bad_useragents browser -i "/etc/acl/blockua.txt"
+http_access deny bad_useragents
+
+# Block: web3
+acl web3 dstdomain "/etc/acl/web3domains.txt"
+http_access deny web3
+
+# Block: IP
+acl no_ip url_regex -i ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$
+http_access deny no_ip
+
+# And finally deny all other access to this proxy
+http_access deny all
+```
+
+### Samba Rules
+
+Modify `/etc/samba/smb.conf` and add the list to the `veto files` directive:
+
+```bash
+include = /etc/acl/ransom_veto.txt
+
+# Optional (includes ransomware and common extensions):
+include = /etc/acl/vetofiles.txt
+```
+
+<Note>
+  **Important**:
+  - You cannot include more than one list in `smb.conf` for the `veto files` directive
+  - Use the `acl/smb/merge_veto.sh` script to merge lists:
+    - `ransom_veto.txt` (updated with `blackshield.sh`)
+    - `common_veto.txt` (static - add/remove extensions manually)
+</Note>
+
+### Iptables Rules (Not Recommended)
+
+<Warning>
+  **Performance Impact**: This project contains ACLs with non-exclusive strings that can generate false positives. Iptables firewall rules slow down traffic and may not produce desired results.
+
+  String matching is intensive and unreliable - consider it as a last resort.
+</Warning>
+
+#### Global Variables
+
+Identify your network interface:
+
+```bash
+ip -o link | awk '$2 != "lo:" {print $2, $(NF-2)}'
+```
+
+Example output:
+```
+enp2s1: 08:00:27:XX:XX:XX
+enp2s0: 94:18:82:XX:XX:XX
+```
+
+Set your LAN interface:
+```bash
+lan=enp2s1
+```
+
+#### Hex String Rule
+
+Block malicious hex strings:
+
+```bash
+# Block: Hex-String
+hstring=$(curl -s https://raw.githubusercontent.com/maravento/vault/master/blackshield/acl/ipt/hexstring.txt)
+for string in $(echo -e "$hstring" | sed -e '/^#/d' -e 's:#.*::g'); do
+    iptables -A FORWARD -i $lan -m string --hex-string "|$string|" --algo kmp -j NFLOG --nflog-prefix 'Illegal-HexString'
+    iptables -A FORWARD -i $lan -m string --hex-string "|$string|" --algo kmp -j DROP
+done
+```
+
+**Example NFLOG output** (`/var/log/ulog/syslogemu.log`):
+```
+Jul  8 18:42:33 user Illegal-HexString IN=enp2s1 OUT=enp2s0 MAC=94:18:82:XX:XX:XX:08:00:27:XX:XX:XX:08:00 SRC=192.168.1.27 DST=94.46.155.193 LEN=281 TOS=00 PREC=0x00 TTL=127 ID=18048 DF PROTO=TCP SPT=56343 DPT=443 SEQ=2920450070 ACK=3653769687 WINDOW=16450 ACK PSH FIN URGP=0 MARK=0
+```
+
+#### BitTorrent Rule
+
+Block BitTorrent protocol:
+
+```bash
+# Lock: BitTorrent Protocol
+bt=$(curl -s https://raw.githubusercontent.com/maravento/vault/master/blackshied/acl/ipt/torrent.txt)
+for string in $(echo -e "$bt" | sed -e '/^#/d' -e 's:#.*::g'); do
+    iptables -A FORWARD -i $lan -m string --hex-string "|$string|" --algo kmp -j NFLOG --nflog-prefix 'BitTorrent'
+    iptables -A FORWARD -i $lan -m string --hex-string "|$string|" --algo kmp -j DROP
+done
+```
+
+**Example NFLOG output** (`/var/log/ulog/syslogemu.log`):
+```
+Jul  9 09:36:12 user BitTorrent IN=enp2s1 OUT=enp2s0 MAC=94:18:82:XX:XX:XX:08:00:27:XX:XX:XX:08:00 SRC=192.168.1.27 DST=172.98.67.7 LEN=116 TOS=00 PREC=0x00 TTL=127 ID=3227 PROTO=UDP SPT=16762 DPT=45371 LEN=96 MARK=0
+```
+
+#### Tor Rule
+
+Block Tor connections:
+
+```bash
+# Lock: Tor
+tor=$(curl -s https://raw.githubusercontent.com/maravento/vault/master/blackshield/acl/ipt/tor.txt)
+for string in `echo -e "$tor" | sed -e '/^#/d' -e 's:#.*::g'`; do
+    iptables -A FORWARD -i $lan -m string --hex-string "|$string|" --algo kmp -j NFLOG --nflog-prefix 'Tor'
+    iptables -A FORWARD -i $lan -m string --hex-string "|$string|" --algo kmp -j DROP
+done
+```
+
+**Example NFLOG output** (`/var/log/ulog/syslogemu.log`):
+```
+Jul  9 09:53:57 user Tor IN=enp2s1 OUT=enp2s0 MAC=94:18:82:XX:XX:XX:08:00:27:XX:XX:XX:08:00 SRC=192.168.1.27 DST=171.25.193.25 LEN=243 TOS=00 PREC=0x00 TTL=127 ID=5068 DF PROTO=TCP SPT=62143 DPT=443 SEQ=1821560764 ACK=2127432945 WINDOW=16450 ACK PSH URGP=0 MARK=0
+```
+
+## ACL Files Reference
+
+| File | Description |
+| --- | --- |
+| `rwext.txt` | Ransomware file extensions |
+| `blockmime.txt` | Blocked MIME types |
+| `blockext.txt` | Blocked file extensions |
+| `blockpatterns.txt` | Malicious URL patterns |
+| `blockua.txt` | Malicious User-Agents |
+| `web3domains.txt` | Web3/crypto domains |
+| `ransom_veto.txt` | Samba veto list for ransomware |
+| `vetofiles.txt` | Combined veto list |
+
+## Data Sources
+
+### Ransomware Extensions
+
+- [dannyroemhild - ransomware-fileext-list](https://github.com/dannyroemhild/ransomware-fileext-list/blob/master/fileextlist.txt)
+- [eshlomo1 - Ransomware-NOTE](https://github.com/eshlomo1/Ransomware-NOTE/blob/main/ransomware-extension-list.txt)
+- [giacomoarru - ransomware-extensions-2024](https://github.com/giacomoarru/ransomware-extensions-2024/blob/main/ransomware-extensions.txt)
+- [kinomakino - ransomware_file_extensions](https://github.com/kinomakino/ransomware_file_extensions/blob/master/extensions.csv)
+- [nspoab - malicious_extensions](https://github.com/nspoab/malicious_extensions/blob/main/list1)
+
+### Malicious User-Agents
+
+- [mitchellkrogza - bad-user-agents](https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/refs/heads/master/_generator_lists/bad-user-agents.list)
+
+## Analysis Tools
+
+### String Capture Tools
+
+- [tcpdump](https://github.com/the-tcpdump-group/tcpdump) - Network packet analyzer
+- [tcpdump cheat sheet](https://cdn.comparitech.com/wp-content/uploads/2019/06/tcpdump-cheat-sheet.jpg)
+- [wireshark](https://www.wireshark.org/) - Network protocol analyzer
+
+### Algorithms Used
+
+- [Boyer-Moore (bm)](https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm) - String search algorithm
+- [Knuth-Morris-Pratt (kmp)](https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm) - Pattern matching algorithm
+
+## Use Cases
+
+- **Ransomware Prevention**: Block file extensions commonly used by ransomware
+- **Malware Protection**: Prevent malicious file downloads via proxy
+- **Bot Blocking**: Filter out malicious crawlers and bots
+- **Circumvention Control**: Block proxy and VPN circumvention attempts
+- **P2P Blocking**: Prevent BitTorrent and similar protocols
+- **Tor Blocking**: Block Tor network access
+- **Samba Protection**: Prevent ransomware from encrypting network shares
+
+## License
+
+BlackShield is licensed under:
+- GPL-3.0
+- CC BY-SA 4.0
+
+## Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

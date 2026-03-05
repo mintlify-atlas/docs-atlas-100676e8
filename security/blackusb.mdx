@@ -1,0 +1,196 @@
+---
+title: BlackUSB
+description: USB device security and whitelisting tool for Linux and Windows
+icon: usb
+---
+
+BlackUSB is an experimental script that prevents theft of personal data, malware, forensic tools, and BadUSB attacks (USB Rubber Ducky). It generates a whitelist of USB/HID devices and blocks any unauthorized insertion of unknown devices.
+
+<Warning>
+  **Experimental Status**: BlackUSB is marked as frozen. Use at your own risk and test thoroughly before deploying in production environments.
+</Warning>
+
+## Platform Support
+
+BlackUSB is available for both Linux and Windows operating systems with different implementations:
+
+<Tabs>
+  <Tab title="Linux">
+    ## Linux Version
+
+    A bash script that generates a whitelist of USB/HID devices and blocks unauthorized devices using udev rules.
+
+    ### Installation
+
+    ```bash
+    sudo wget -q -N https://raw.githubusercontent.com/maravento/vault/master/blackusb/linux/blackusb.sh -O /path_to/blackusb.sh
+    sudo chmod +x /path_to/blackusb.sh
+    ```
+
+    ### Command Reference
+
+    | Command | Short | Description |
+    | --- | --- | --- |
+    | `show` | `s` | Show currently connected USB devices |
+    | `on` | `o` | Turn on BlackUSB and generate whitelist of connected USB devices |
+    | `eject` | `j` | Choose a device from the list to eject or add entry |
+    | `off` | `x` | Temporarily deactivate BlackUSB |
+    | `gen` | `g` | Generate or refresh whitelist udev rules file |
+    | `del` | `d` | Delete udev rules file containing whitelist |
+    | `edit` | `e` | Edit udev rules file manually |
+
+    ### Usage Examples
+
+    <Steps>
+      <Step title="Show connected devices">
+        Display all currently connected USB devices:
+
+        ```bash
+        sudo /path_to/blackusb.sh s
+        ```
+
+        Example output:
+        ```
+        0 Name=xHCI Host Controller, Vendor=1d6b, Product=0003, Serial=0022:00:14.0
+        1 Vendor=8087, Product=07dc
+        2 Name=USB2.0-CRW, Vendor=0bda, Product=0129, Serial=20100001396000000
+        3 Name=Integrated_Webcam_HD, Vendor=0c45, Product=6710
+        4 Name=HID-compliant mouse, Vendor=046d, Product=c530
+        5 Name=xHCI Host Controller, Vendor=1d6b, Product=0002, Serial=0022:00:14.0
+        ```
+      </Step>
+
+      <Step title="Enable protection">
+        Activate BlackUSB and create a whitelist of currently connected devices:
+
+        ```bash
+        sudo /path_to/blackusb.sh on
+        ```
+      </Step>
+
+      <Step title="Manage devices">
+        Eject a device or add to whitelist:
+
+        ```bash
+        sudo /path_to/blackusb.sh eject
+        ```
+      </Step>
+    </Steps>
+
+    ### Paranoic Mode
+
+    By default, BlackUSB locks the terminal when an unauthorized device is detected. Paranoic mode powers off the system instead.
+
+    To enable, edit the script and uncomment:
+
+    ```bash
+    'poweroff'
+    ```
+
+    <Warning>
+      **Paranoic Mode**: Enabling this will immediately shut down your system when an unauthorized USB device is inserted. Use with extreme caution.
+    </Warning>
+
+    ### Logs
+
+    All BlackUSB events are logged to:
+
+    ```
+    /var/log/blackusb.log
+    ```
+
+    Example log entry:
+    ```
+    2017-07-06 12:34:10 Blackusb triggered!
+    Unknown Device Blocked: SUBSYSTEM=="usb", ATTR{idVendor}=="0781", ATTR{idProduct}=="5567", ATTR{serial}=="4C530799910104103543"
+    Cruzer Blade
+    ```
+
+    ### Dependencies
+
+    - `bash`
+    - `udev`
+
+    ### Credits
+
+    BlackUSB is forked from:
+    - [usbkill](https://github.com/hephaest0s/usbkill)
+    - [usbdeath](https://github.com/trpt/usbdeath)
+  </Tab>
+
+  <Tab title="Windows">
+    ## Windows Version
+
+    Tool to block unauthorized devices including USB, HID, HDC, Bluetooth, IEEE, SmartCardReader, PCMCIA, Printers, SCSI, and RAID. It cleans previous device installations, rescans connected devices, and blocks new ones.
+
+    ### Download
+
+    | File | OS Compatibility | Size |
+    | --- | --- | --- |
+    | [blackusb.exe (.zip)](https://raw.githubusercontent.com/maravento/vault/master/blackusb/win/blackusb.zip) | Windows 10/11 x86 x64 | 4.3 MB |
+
+    ### Installation
+
+    <Steps>
+      <Step title="Prepare system">
+        1. Disable your Antivirus, Antimalware, SmartScreen, or any other security solution
+        2. Close all windows
+        3. Verify the date and time on your PC is correct
+      </Step>
+
+      <Step title="Extract and run">
+        1. Unzip `BlackUSB.exe (.zip)` to your desktop
+        2. Execute with double-click
+        3. Accept privileged execution when prompted
+        4. Follow the on-screen instructions
+      </Step>
+    </Steps>
+
+    ### Important Usage Notes
+
+    <Warning>
+      **Critical Warnings**:
+      - **Do not press BLOCK button twice in a row** - This will block ALL USB/HID devices
+      - **GPO Policies** - If you have Group Policy Objects defined, they will be rewritten. Make a backup first
+    </Warning>
+
+    <Note>
+      **Adding New Devices**: To add a new USB/HID device to your whitelist:
+      1. Press the RESTORE button to remove restrictions
+      2. Connect the new device
+      3. Press the BLOCK button
+    </Note>
+
+    ### Whitelist Report
+
+    After executing the BLOCK option, a `whitelist.txt` file will appear on your desktop containing the list of USB/HID devices excluded from blocking. This file is deleted when using the RESTORE option.
+
+    ### Packages and Tools Used
+
+    - [74cz](http://74.cz/es/make-sfx/index.php)
+    - [7zSFX Builder](https://sourceforge.net/projects/s-zipsfxbuilder/)
+    - [Resource Turner](http://www.restuner.com/)
+    - [Robust File Copy](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy)
+    - [USBOblivion](https://sourceforge.net/projects/usboblivion/)
+    - [Windows SDK - Devcon32/64](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+    - [WinZenity](https://github.com/maravento/vault/tree/master/winzenity)
+  </Tab>
+</Tabs>
+
+## Use Cases
+
+- **Data Theft Prevention**: Block unauthorized USB drives from being used to steal sensitive data
+- **BadUSB Protection**: Prevent USB Rubber Ducky and similar HID attack devices
+- **Malware Prevention**: Stop malware propagation through infected USB devices
+- **Forensic Tool Defense**: Block unauthorized forensic tools from accessing the system
+- **Compliance**: Enforce USB device policies in regulated environments
+
+## License
+
+BlackUSB is licensed under:
+- GPL-3.0
+- CC BY-SA 4.0
+
+## Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.

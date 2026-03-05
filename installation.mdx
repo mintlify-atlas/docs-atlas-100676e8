@@ -1,0 +1,333 @@
+---
+title: "Installation"
+description: "Learn how to download all Vault projects or specific individual projects using Git or the gitfolder.py script"
+---
+
+## Overview
+
+Vault offers flexible installation options to suit your needs. You can download the entire collection of projects at once, or selectively download only the specific projects you need using the `gitfolder.py` utility script.
+
+<Note>
+  Choose the installation method that best fits your use case. Full clone includes all projects, while selective download saves bandwidth and disk space.
+</Note>
+
+## Download All Projects
+
+To download the complete Vault repository with all projects, use a shallow Git clone. This method downloads the entire collection efficiently.
+
+<Steps>
+  <Step title="Run the Git clone command">
+    Execute the following command in your terminal:
+    
+    ```bash
+    git clone --depth=1 https://github.com/maravento/vault.git
+    ```
+    
+    The `--depth=1` flag creates a shallow clone, downloading only the latest commit to save bandwidth and time.
+  </Step>
+  
+  <Step title="Navigate to the vault directory">
+    ```bash
+    cd vault
+    ```
+  </Step>
+  
+  <Step title="Explore available projects">
+    List all available projects:
+    
+    ```bash
+    ls -la
+    ```
+    
+    You'll see directories for all Vault projects including blackshield, blackusb, ddos, dextroyer, dofi, gateproxy, itsm, netscan, proxymon, scripts, trek, uniopos, and winzenity.
+  </Step>
+</Steps>
+
+## Download Specific Projects
+
+If you only need specific projects from the Vault collection, use the `gitfolder.py` Python script to download individual folders from the repository. This is useful when you don't need the entire collection.
+
+### Prerequisites
+
+Ensure Python 3 is installed and configured on your system.
+
+<CodeGroup>
+```bash Ubuntu/Debian
+sudo apt update
+sudo apt install -y python-is-python3 python3-pip
+```
+
+```bash RHEL/CentOS/Fedora
+sudo dnf install -y python3 python3-pip
+```
+
+```bash macOS
+brew install python3
+```
+
+```powershell Windows
+# Download Python from python.org or use winget
+winget install Python.Python.3
+```
+</CodeGroup>
+
+### Install Required Python Packages
+
+The `gitfolder.py` script requires the `requests` library:
+
+```bash
+pip install requests
+```
+
+### Download the gitfolder.py Script
+
+<Steps>
+  <Step title="Download the script">
+    Download `gitfolder.py` directly from the Vault repository:
+    
+    ```bash
+    wget -qO gitfolder.py https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+    ```
+    
+    <Tip>
+      On systems without `wget`, use `curl`:
+      ```bash
+      curl -sL https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py -o gitfolder.py
+      ```
+    </Tip>
+  </Step>
+  
+  <Step title="Make the script executable">
+    ```bash
+    chmod +x gitfolder.py
+    ```
+  </Step>
+  
+  <Step title="Download a specific project">
+    Replace `project_name` with the name of the project you want to download:
+    
+    ```bash
+    python gitfolder.py https://github.com/maravento/vault/project_name
+    ```
+    
+    For example, to download only the blackusb project:
+    
+    ```bash
+    python gitfolder.py https://github.com/maravento/vault/blackusb
+    ```
+  </Step>
+</Steps>
+
+### How gitfolder.py Works
+
+The `gitfolder.py` script uses the GitHub API to download specific folders or files from a public repository without cloning the entire project.
+
+<Accordion title="View script functionality details">
+  **Key Features:**
+  
+  - Downloads specific folders or files from any public GitHub repository
+  - Uses the GitHub API for efficient, targeted downloads
+  - Supports recursive download of subfolders
+  - Preserves the original directory structure locally
+  - No authentication required for public repositories
+  
+  **How it works:**
+  
+  1. Parses the GitHub URL to extract repository owner, name, and folder path
+  2. Queries the GitHub API to retrieve folder contents
+  3. Recursively downloads files and subdirectories
+  4. Creates local directory structure matching the repository
+  
+  **Script internals:**
+  
+  ```python
+  def download_folder_from_github(repo_owner, repo_name, folder_path, output_dir):
+      # Create the output directory if it doesn't exist
+      os.makedirs(output_dir, exist_ok=True)
+      
+      # Make a GET request to the GitHub API
+      url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{folder_path}"
+      response = requests.get(url)
+      
+      if response.status_code == 200:
+          contents = response.json()
+          
+          # Handle both files and directories
+          if isinstance(contents, dict) and contents.get("type") == "file":
+              download_item(contents, output_dir)
+              return
+          
+          # Iterate over folder contents
+          for item in contents:
+              if item["type"] == "file":
+                  download_item(item, output_dir)
+              elif item["type"] == "dir":
+                  # Recursively download subfolders
+                  subfolder_path = folder_path + '/' + item["name"]
+                  subfolder_output_dir = os.path.join(output_dir, item["name"])
+                  download_folder_from_github(repo_owner, repo_name, 
+                                             subfolder_path, subfolder_output_dir)
+  ```
+</Accordion>
+
+## Example: Download Multiple Projects
+
+You can download multiple specific projects by running the script multiple times:
+
+```bash
+# Download security tools
+python gitfolder.py https://github.com/maravento/vault/blackusb
+python gitfolder.py https://github.com/maravento/vault/blackshield
+python gitfolder.py https://github.com/maravento/vault/dextroyer
+
+# Download network tools
+python gitfolder.py https://github.com/maravento/vault/gateproxy
+python gitfolder.py https://github.com/maravento/vault/proxymon
+
+# Download specific scripts
+python gitfolder.py https://github.com/maravento/vault/scripts/python
+python gitfolder.py https://github.com/maravento/vault/scripts/bash
+```
+
+<Tip>
+  You can also download specific subdirectories within projects by providing the full path.
+</Tip>
+
+## Available Projects
+
+Here are all the projects you can download individually:
+
+<CardGroup cols={2}>
+  <Card title="blackshield" icon="shield" href="/security/blackshield">
+    Advanced security protection system
+  </Card>
+  
+  <Card title="blackusb" icon="usb" href="/security/blackusb">
+    USB device security and control
+  </Card>
+  
+  <Card title="ddos" icon="shield-halved" href="/network/ddos">
+    DDoS attack mitigation tools
+  </Card>
+  
+  <Card title="dextroyer" icon="virus" href="/security/dextroyer">
+    Malware detection and removal
+  </Card>
+  
+  <Card title="dofi" icon="filter" href="/sysadmin/dofi">
+    Domain filtering utility
+  </Card>
+  
+  <Card title="gateproxy" icon="network-wired" href="/network/gateproxy">
+    Gateway proxy management
+  </Card>
+  
+  <Card title="itsm" icon="ticket" href="/sysadmin/itsm">
+    IT Service Management tools
+  </Card>
+  
+  <Card title="netscan" icon="radar" href="/sysadmin/netscan">
+    Network scanning utilities
+  </Card>
+  
+  <Card title="proxymon" icon="chart-line" href="/network/proxymon">
+    Proxy server monitoring
+  </Card>
+  
+  <Card title="scripts" icon="file-code" href="/scripts/overview">
+    Collection of automation scripts
+  </Card>
+  
+  <Card title="trek" icon="map" href="/sysadmin/trek">
+    System tracking and exploration
+  </Card>
+  
+  <Card title="uniopos" icon="desktop" href="/sysadmin/uniopos">
+    Unified operations system
+  </Card>
+  
+  <Card title="winzenity" icon="windows" href="/windows/winzenity">
+    Windows dialog utilities
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="gitfolder.py fails with 'requests module not found'">
+    Install the requests library:
+    ```bash
+    pip install requests
+    ```
+    
+    If you still encounter issues, try:
+    ```bash
+    python3 -m pip install requests
+    ```
+  </Accordion>
+  
+  <Accordion title="GitHub API rate limit exceeded">
+    The GitHub API has rate limits for unauthenticated requests (60 requests per hour). If you hit this limit:
+    
+    - Wait for the rate limit to reset (check the error message for reset time)
+    - Consider cloning the full repository instead
+    - Use authenticated requests by creating a personal access token
+  </Accordion>
+  
+  <Accordion title="Permission denied when making script executable">
+    If `chmod +x gitfolder.py` fails, you may need sudo privileges:
+    ```bash
+    sudo chmod +x gitfolder.py
+    ```
+    
+    Alternatively, run the script directly with Python:
+    ```bash
+    python gitfolder.py <url>
+    ```
+  </Accordion>
+  
+  <Accordion title="Project not found or invalid URL">
+    Ensure you're using the correct project name. Valid project names are:
+    
+    - blackshield
+    - blackusb
+    - ddos
+    - dextroyer
+    - dofi
+    - gateproxy
+    - itsm
+    - netscan
+    - proxymon
+    - scripts
+    - trek
+    - uniopos
+    - winzenity
+    
+    Example correct URL:
+    ```bash
+    python gitfolder.py https://github.com/maravento/vault/blackusb
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+After installing Vault projects, explore the documentation for each tool:
+
+<CardGroup cols={3}>
+  <Card title="Security Tools" icon="shield" href="/security/blackusb">
+    Learn about USB security and malware protection
+  </Card>
+  
+  <Card title="Network Tools" icon="network-wired" href="/network/gateproxy">
+    Configure proxies and monitor network traffic
+  </Card>
+  
+  <Card title="System Admin" icon="server" href="/sysadmin/itsm">
+    Set up ITSM and system utilities
+  </Card>
+</CardGroup>
+
+<Warning>
+  Always review project-specific README files and documentation before deploying tools in production environments. Check the lifecycle badge to understand the project's maturity level.
+</Warning>

@@ -1,0 +1,1033 @@
+---
+title: Bash Scripts
+description: 50+ Linux automation scripts for system administration, networking, and cloud operations
+icon: terminal
+---
+
+## Overview
+
+Comprehensive collection of Bash scripts for Linux system administration, tested on Ubuntu 22.04/24.04 x64.
+
+## Installation
+
+### Download Individual Script
+
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/<script-name>.sh
+chmod +x <script-name>.sh
+./<script-name>.sh
+```
+
+### Download All Bash Scripts
+
+```bash
+sudo apt install -y python-is-python3
+wget -qO gitfolder.py https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+chmod +x gitfolder.py
+python gitfolder.py https://github.com/maravento/vault/scripts/bash
+```
+
+## Script Categories
+
+<Accordion title="Application and Deployment Utilities" icon="rocket" defaultOpen>
+
+### Crypto Notify
+
+Real-time cryptocurrency price notifications for top 5 cryptocurrencies.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/cryptonotify.sh
+chmod +x cryptonotify.sh
+```
+
+**Usage:**
+```bash
+./cryptonotify.sh
+```
+
+---
+
+### Joomla Installer
+
+Complete Joomla CMS installation/removal with Apache, MySQL, PHP, and mkcert.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/joomla.sh
+chmod +x joomla.sh
+```
+
+**Usage:**
+```bash
+sudo ./joomla.sh install  # Install Joomla with dependencies
+sudo ./joomla.sh remove   # Remove Joomla
+```
+
+---
+
+### RustDesk Client Manager
+
+Manage RustDesk remote desktop client installation and updates.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/rustdesk.sh
+chmod +x rustdesk.sh
+```
+
+**Usage:**
+```bash
+sudo ./rustdesk.sh install    # Install RustDesk
+sudo ./rustdesk.sh uninstall  # Uninstall RustDesk
+sudo ./rustdesk.sh update     # Update RustDesk
+```
+
+</Accordion>
+
+<Accordion title="Cloud & Backup" icon="cloud">
+
+### FreeFileSync Update
+
+Automatically update FreeFileSync to the latest version.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/ffsupdate.sh
+chmod +x ffsupdate.sh
+```
+
+**Usage:**
+```bash
+sudo ./ffsupdate.sh
+```
+
+---
+
+### Google Drive Mount
+
+Mount/unmount Google Drive to `/home/$USER/gdrive`.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/gdrive.sh
+chmod +x gdrive.sh
+```
+
+**Usage:**
+```bash
+./gdrive.sh mount    # Mount Google Drive
+./gdrive.sh umount   # Unmount Google Drive
+```
+
+---
+
+### MEGAsync Instances
+
+Manage multiple MEGAsync instances.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/msyncs
+chmod +x msyncs
+```
+
+**Usage:**
+```bash
+./msyncs start   # Start MEGAsync instances
+./msyncs stop    # Stop MEGAsync instances
+./msyncs status  # Check status
+```
+
+---
+
+### Rclone Cloud Mount
+
+Mount cloud storage (Google Drive, PCloud, Dropbox, OneDrive, Mega) using rclone.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/rcloud.sh
+chmod +x rcloud.sh
+```
+
+**Usage:**
+```bash
+./rcloud.sh mount     # Mount cloud storage
+./rcloud.sh umount    # Unmount cloud storage
+./rcloud.sh start     # Start service
+./rcloud.sh stop      # Stop service
+./rcloud.sh status    # Check status
+./rcloud.sh restart   # Restart service
+```
+
+---
+
+### Rclone Sync
+
+Sync files to/from cloud storage providers.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/rsync.sh
+chmod +x rsync.sh
+```
+
+**Usage:**
+```bash
+./rsync.sh  # Sync download/upload folders
+```
+
+</Accordion>
+
+<Accordion title="Context Menu Tools" icon="mouse-pointer">
+
+Scripts for file manager context menus (Nautilus, Caja, Thunar, Nemo).
+
+### Copy Path
+
+Copy file/folder path to clipboard.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/copypath
+chmod +x copypath
+sudo mv copypath /usr/local/bin/
+```
+
+---
+
+### Check MD5
+
+Verify MD5 checksums.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/checkmd5
+chmod +x checkmd5
+sudo mv checkmd5 /usr/local/bin/
+```
+
+---
+
+### Check SHA256
+
+Verify SHA256 checksums.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/checksha256
+chmod +x checksha256
+sudo mv checksha256 /usr/local/bin/
+```
+
+---
+
+### Send to Phone (KDE Connect)
+
+Send files to smartphone via KDE Connect.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/send2phone
+chmod +x send2phone
+sudo mv send2phone /usr/local/bin/
+```
+
+---
+
+### Make MD5
+
+Generate MD5 checksums.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/makemd5
+chmod +x makemd5
+sudo mv makemd5 /usr/local/bin/
+```
+
+---
+
+### Make SHA256
+
+Generate SHA256 checksums.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/makesha256
+chmod +x makesha256
+sudo mv makesha256 /usr/local/bin/
+```
+
+---
+
+### Mount Manager
+
+Manage SMB, SFTP, and FUSE mounts.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/mountman
+chmod +x mountman
+sudo mv mountman /usr/local/bin/
+```
+
+</Accordion>
+
+<Accordion title="Networking & Security" icon="shield">
+
+### Android to PC (scrcpy)
+
+Mirror Android device to PC.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/droid2pc.sh
+chmod +x droid2pc.sh
+```
+
+**Usage:**
+```bash
+./droid2pc.sh start   # Start mirroring
+./droid2pc.sh stop    # Stop mirroring
+./droid2pc.sh status  # Check status
+```
+
+---
+
+### ArpON Table Filter
+
+ARP table filtering and monitoring.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/arponscan.sh
+chmod +x arponscan.sh
+```
+
+**Usage:**
+```bash
+sudo ./arponscan.sh
+```
+
+---
+
+### Arpwatch
+
+Monitor ARP activity.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/arpwatch.sh
+chmod +x arpwatch.sh
+```
+
+**Usage:**
+```bash
+sudo ./arpwatch.sh start   # Start monitoring
+sudo ./arpwatch.sh stop    # Stop monitoring
+sudo ./arpwatch.sh status  # Check status
+```
+
+---
+
+### Cloudflare Tunnel
+
+Manage Cloudflare tunnels.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/cftunnel.sh
+chmod +x cftunnel.sh
+```
+
+**Usage:**
+```bash
+./cftunnel.sh start   # Start tunnel
+./cftunnel.sh stop    # Stop tunnel
+./cftunnel.sh status  # Check status
+```
+
+---
+
+### Internet Watchdog
+
+Monitor internet connectivity.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/watchdog.sh
+chmod +x watchdog.sh
+```
+
+**Usage:**
+```bash
+./watchdog.sh start   # Start monitoring
+./watchdog.sh stop    # Stop monitoring
+./watchdog.sh status  # Check status
+```
+
+---
+
+### IP Kill
+
+Block IP addresses using iptables.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/ipkill.sh
+chmod +x ipkill.sh
+```
+
+**Usage:**
+```bash
+sudo ./ipkill.sh <IP_ADDRESS>
+```
+
+---
+
+### Netplan Switch
+
+Manage Netplan network configurations.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/npswitch.sh
+chmod +x npswitch.sh
+```
+
+**Usage:**
+```bash
+sudo ./npswitch.sh install    # Install Netplan
+sudo ./npswitch.sh uninstall  # Uninstall Netplan
+sudo ./npswitch.sh status     # Check status
+sudo ./npswitch.sh help       # Show help
+```
+
+---
+
+### ngLocalhost Tunnel
+
+Create localhost tunnels.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/nglocalhost.sh
+chmod +x nglocalhost.sh
+```
+
+**Usage:**
+```bash
+./nglocalhost.sh start   # Start tunnel
+./nglocalhost.sh stop    # Stop tunnel
+./nglocalhost.sh status  # Check status
+```
+
+---
+
+### Port Kill
+
+Kill processes by port number.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/portkill.sh
+chmod +x portkill.sh
+```
+
+**Usage:**
+```bash
+sudo ./portkill.sh <PORT_NUMBER>
+# Check port first: sudo netstat -lnp | grep "port"
+```
+
+---
+
+### Serveo Tunnel
+
+Manage Serveo SSH tunnels.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/serveo.sh
+chmod +x serveo.sh
+```
+
+**Usage:**
+```bash
+./serveo.sh start   # Start tunnel
+./serveo.sh stop    # Stop tunnel
+./serveo.sh status  # Check status
+```
+
+---
+
+### Unifi Hotspot Client Access
+
+Manage Unifi hotspot client access via iptables.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/unifihotspot.sh
+chmod +x unifihotspot.sh
+```
+
+**Usage:**
+```bash
+sudo ./unifihotspot.sh
+```
+
+---
+
+### Wireguard VPN
+
+Install and configure Wireguard VPN server/client.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/wireguard.sh
+chmod +x wireguard.sh
+```
+
+**Usage:**
+```bash
+sudo ./wireguard.sh install server     # Install VPN server
+sudo ./wireguard.sh install client     # Install VPN client
+sudo ./wireguard.sh uninstall server   # Uninstall server
+sudo ./wireguard.sh uninstall client   # Uninstall client
+```
+
+</Accordion>
+
+<Accordion title="Proxy" icon="server">
+
+### Squid Analysis Tool
+
+Analyze Squid proxy logs and performance.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/squidtool.sh
+chmod +x squidtool.sh
+```
+
+**Usage:**
+```bash
+sudo ./squidtool.sh
+```
+
+---
+
+### Squid-OpenSSL (SSL-Bump)
+
+Configure Squid with SSL-bump for HTTPS inspection.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/sslbump.sh
+chmod +x sslbump.sh
+```
+
+**Usage:**
+```bash
+sudo ./sslbump.sh
+```
+
+</Accordion>
+
+<Accordion title="Storage and File Operations" icon="hard-drive">
+
+### Cleaner
+
+Delete unwanted files (Thumbs.db, Zone.identifier, encryptable, etc.).
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/cleaner.sh
+chmod +x cleaner.sh
+```
+
+**Usage:**
+```bash
+./cleaner.sh /path/to/directory
+```
+
+---
+
+### Disk Check
+
+Check HDD/SSD/NVMe health status.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/diskcheck.sh
+chmod +x diskcheck.sh
+```
+
+**Usage:**
+```bash
+sudo ./diskcheck.sh
+```
+
+---
+
+### Drive Crypt
+
+Mount/unmount Cryptomator encrypted disks to `/home/$USER/dcrypt`.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/drivecrypt.sh
+chmod +x drivecrypt.sh
+```
+
+**Usage:**
+```bash
+./drivecrypt.sh mount    # Mount encrypted drive
+./drivecrypt.sh umount   # Unmount encrypted drive
+```
+
+---
+
+### Mass Unzip with Password
+
+Extract multiple password-protected archives.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/massunzip.sh
+chmod +x massunzip.sh
+```
+
+**Usage:**
+```bash
+./massunzip.sh /path/to/archives password
+```
+
+---
+
+### NTFS Disk Drive
+
+Mount/unmount NTFS drives with ntfs-3g.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/ntfsdrive.sh
+chmod +x ntfsdrive.sh
+```
+
+**Usage:**
+```bash
+sudo ./ntfsdrive.sh mount /dev/sdX1 /mnt/point    # Mount NTFS
+sudo ./ntfsdrive.sh umount /mnt/point             # Unmount NTFS
+```
+
+---
+
+### System Migration Tool
+
+Backup and restore system applications and configurations.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/appbr.sh
+chmod +x appbr.sh
+```
+
+**Usage:**
+```bash
+sudo ./appbr.sh backup   # Backup system
+sudo ./appbr.sh restore  # Restore system
+```
+
+---
+
+### TRIM for SSD/NVMe
+
+Optimize SSD/NVMe drives with TRIM.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/trim.sh
+chmod +x trim.sh
+```
+
+**Usage:**
+```bash
+sudo ./trim.sh
+```
+
+---
+
+### Watch Directories
+
+Monitor directory changes.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/watchdir.sh
+chmod +x watchdir.sh
+```
+
+**Usage:**
+```bash
+./watchdir.sh start /path/to/dir   # Start watching
+./watchdir.sh stop                 # Stop watching
+./watchdir.sh status               # Check status
+```
+
+</Accordion>
+
+<Accordion title="System and Resource Management" icon="gear">
+
+### Check Bandwidth
+
+Monitor and enforce minimum bandwidth requirements.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/bandwidth.sh
+chmod +x bandwidth.sh
+```
+
+**Usage:**
+```bash
+./bandwidth.sh <min_download_mbps> <min_upload_mbps>
+```
+
+---
+
+### Check Cron
+
+Verify and validate cron jobs.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/checkcron.sh
+chmod +x checkcron.sh
+```
+
+**Usage:**
+```bash
+./checkcron.sh
+```
+
+---
+
+### Force Logrotate
+
+Manually trigger log rotation.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/logrotate.sh
+chmod +x logrotate.sh
+```
+
+**Usage:**
+```bash
+sudo ./logrotate.sh
+```
+
+---
+
+### Kill Process by Name
+
+Terminate processes by name.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/pskill.sh
+chmod +x pskill.sh
+```
+
+**Usage:**
+```bash
+sudo ./pskill.sh <process_name>
+```
+
+---
+
+### Kworker Kill
+
+Manage problematic kworker processes.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/kworker.sh
+chmod +x kworker.sh
+```
+
+**Usage:**
+```bash
+sudo ./kworker.sh
+```
+
+---
+
+### CPU Limit
+
+Limit CPU usage of processes.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/cpulimit.sh
+chmod +x cpulimit.sh
+```
+
+**Usage:**
+```bash
+./cpulimit.sh start <process> <limit%>  # Start limiting
+./cpulimit.sh stop                      # Stop limiting
+./cpulimit.sh status                    # Check status
+```
+
+---
+
+### Realtek Linux Drivers
+
+Install Realtek network drivers.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/realtekdrv.sh
+chmod +x realtekdrv.sh
+```
+
+**Usage:**
+```bash
+sudo ./realtekdrv.sh
+```
+
+---
+
+### Winpower UPS
+
+Manage Winpower UPS software.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/winpower.sh
+chmod +x winpower.sh
+```
+
+**Usage:**
+```bash
+sudo ./winpower.sh install   # Install Winpower
+sudo ./winpower.sh remove    # Remove Winpower
+sudo ./winpower.sh start     # Start service
+sudo ./winpower.sh stop      # Stop service
+sudo ./winpower.sh status    # Check status
+sudo ./winpower.sh restart   # Restart service
+```
+
+</Accordion>
+
+<Accordion title="Virtualization" icon="cube">
+
+### Bridge Management
+
+Manage network bridges for virtualization.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/bridge.sh
+chmod +x bridge.sh
+```
+
+**Usage:**
+```bash
+sudo ./bridge.sh on      # Enable bridge
+sudo ./bridge.sh off     # Disable bridge
+sudo ./bridge.sh status  # Check status
+sudo ./bridge.sh clean   # Clean configuration
+```
+
+---
+
+### Docker + Portainer
+
+Install Docker with Portainer web interface.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/docker.sh
+chmod +x docker.sh
+```
+
+**Usage:**
+```bash
+sudo ./docker.sh install  # Install Docker + Portainer
+sudo ./docker.sh remove   # Remove Docker + Portainer
+```
+
+---
+
+### phpVirtualBox Install
+
+Install phpVirtualBox web interface.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/phpvbox.sh
+chmod +x phpvbox.sh
+```
+
+**Usage:**
+```bash
+sudo ./phpvbox.sh
+```
+
+---
+
+### Virtual Hard Disk (VHD)
+
+Create and manage virtual disk images.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/vdisk.sh
+chmod +x vdisk.sh
+```
+
+**Usage:**
+```bash
+sudo ./vdisk.sh create /path/to/image.img <size_GB>  # Create VHD
+sudo ./vdisk.sh mount /path/to/image.img /mnt/point  # Mount VHD
+sudo ./vdisk.sh umount /mnt/point                    # Unmount VHD
+```
+
+---
+
+### VirtualBox 7.1
+
+Install/remove VirtualBox 7.1.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/vbox.sh
+chmod +x vbox.sh
+```
+
+**Usage:**
+```bash
+sudo ./vbox.sh install  # Install VirtualBox
+sudo ./vbox.sh remove   # Remove VirtualBox
+```
+
+---
+
+### VMs VirtualBox Manager
+
+Manage VirtualBox virtual machines.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/vm.sh
+chmod +x vm.sh
+```
+
+**Usage:**
+```bash
+./vm.sh start my_vm     # Start VM
+./vm.sh stop my_vm      # Stop VM
+./vm.sh status my_vm    # Check VM status
+./vm.sh shutdown my_vm  # Graceful shutdown
+./vm.sh reset my_vm     # Reset VM
+```
+
+<Note>
+Replace `my_vm` with the name of your virtual machine.
+</Note>
+
+---
+
+### WinBoat
+
+Install/remove WinBoat.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/winboat.sh
+chmod +x winboat.sh
+```
+
+**Usage:**
+```bash
+sudo ./winboat.sh install  # Install WinBoat
+sudo ./winboat.sh remove   # Remove WinBoat
+```
+
+</Accordion>
+
+<Accordion title="Webmin Module Installation Tools" icon="globe">
+
+### Netplan Manager
+
+Webmin module for Netplan network configuration (Networking Category).
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/netplanmgr.sh
+chmod +x netplanmgr.sh
+```
+
+**Usage:**
+```bash
+sudo ./netplanmgr.sh install    # Install Webmin module
+sudo ./netplanmgr.sh uninstall  # Uninstall Webmin module
+```
+
+---
+
+### Services Monitor
+
+Webmin module for service monitoring (System Category).
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/servicemon.sh
+chmod +x servicemon.sh
+```
+
+**Usage:**
+```bash
+sudo ./servicemon.sh install    # Install Webmin module
+sudo ./servicemon.sh uninstall  # Uninstall Webmin module
+```
+
+---
+
+### Squid Monitor
+
+Webmin module for Squid proxy monitoring (Server Category).
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/squidmon.sh
+chmod +x squidmon.sh
+```
+
+**Usage:**
+```bash
+sudo ./squidmon.sh install    # Install Webmin module
+sudo ./squidmon.sh uninstall  # Uninstall Webmin module
+```
+
+</Accordion>
+
+## Requirements
+
+- Ubuntu 22.04 or 24.04 x64
+- Root or sudo access for most scripts
+- Internet connection for downloading dependencies
+
+## License
+
+- [GPL-3.0](https://www.gnu.org/licenses/gpl.txt)
+- [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+<Warning>
+Always review scripts before execution and test in a development environment first.
+</Warning>

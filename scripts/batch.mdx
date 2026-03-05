@@ -1,0 +1,394 @@
+---
+title: Batch Scripts
+description: Windows administration and system configuration batch scripts
+icon: windows
+---
+
+## Overview
+
+Collection of Windows batch scripts for system administration, configuration, and maintenance. All scripts are tested on Windows 10/11 x64.
+
+## Installation
+
+### Download Individual Script
+
+```batch
+curl -o script.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/<script-name>.bat
+```
+
+### Run as Administrator
+
+Most batch scripts require administrator privileges. Right-click the `.bat` file and select "Run as administrator".
+
+## Available Scripts
+
+### FixPrint
+
+Clean print queue and resolve printing issues.
+
+**Download:**
+```batch
+curl -o fixprint.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/fixprint.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+fixprint.bat
+```
+
+**Features:**
+- Stops print spooler service
+- Clears print queue
+- Removes stuck print jobs
+- Restarts print spooler
+
+---
+
+### Mozilla Thunderbird Backup
+
+Backup Thunderbird profiles to USB drive.
+
+**Download:**
+```batch
+curl -o mtpbackup.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/mtpbackup.bat
+```
+
+**Usage:**
+```batch
+mtpbackup.bat
+```
+
+**Features:**
+- Automatic profile detection
+- USB drive backup
+- Profile preservation
+
+---
+
+### Net Reset
+
+Reset network configuration including proxy and NIC settings.
+
+**Download:**
+```batch
+curl -o netreset.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/netreset.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+netreset.bat
+```
+
+**Features:**
+- Reset TCP/IP stack
+- Clear DNS cache
+- Reset proxy settings
+- Reset network adapters
+- Winsock reset
+
+---
+
+### Non-Essential Services
+
+Disable or enable non-essential Windows services for performance optimization.
+
+**Download:**
+```batch
+curl -o nonservices.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/nonservices.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+nonservices.bat disable  REM Disable non-essential services
+nonservices.bat auto     REM Re-enable services (set to automatic)
+```
+
+**Features:**
+- Performance optimization
+- Service management
+- Reversible changes
+
+<Warning>
+Disabling services may affect system functionality. Review the script before execution.
+</Warning>
+
+---
+
+### NVMe Optimizer
+
+Optimize NVMe drive settings for better performance.
+
+**Download:**
+```batch
+curl -o nvmeoptimizer.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/nvmeoptimizer.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+nvmeoptimizer.bat add     REM Apply optimizations
+nvmeoptimizer.bat remove  REM Remove optimizations
+```
+
+**Features:**
+- NVMe performance tuning
+- Registry optimizations
+- Power management adjustments
+
+---
+
+### Regedit Backup
+
+Backup Windows Registry to `%HOMEDRIVE%\RegBackup`.
+
+**Download:**
+```batch
+curl -o regbackup.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/regbackup.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+regbackup.bat
+```
+
+**Features:**
+- Full registry backup
+- Automatic backup location
+- Timestamped backups
+
+<Note>
+Backups are saved to `%HOMEDRIVE%\RegBackup` (typically `C:\RegBackup`)
+</Note>
+
+---
+
+### Safe Boot
+
+Boot Windows into different safe modes.
+
+**Download:**
+```batch
+curl -o safeboot.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/safeboot.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+safeboot.bat minimal   REM Safe boot minimal
+safeboot.bat network   REM Safe boot with network
+safeboot.bat normal    REM Normal boot
+```
+
+**Modes:**
+- **minimal**: Safe Mode
+- **network**: Safe Mode with Networking
+- **normal**: Normal boot mode
+
+---
+
+### SMB Config
+
+Configure SMB protocol settings (SMB1, SMB signing, insecure guest access).
+
+**Download:**
+```batch
+curl -o smbconf.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/smbconf.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+smbconf.bat
+```
+
+**Features:**
+- Enable/disable SMB1 protocol
+- Configure SMB signing
+- Manage insecure guest access
+- Security configuration
+
+<Warning>
+SMB1 is deprecated and insecure. Only enable for legacy compatibility when absolutely necessary.
+</Warning>
+
+---
+
+### Unifi Network Server Setup
+
+Install and configure Unifi Network Server on Windows.
+
+**Download:**
+```batch
+curl -o unifisetup.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/unifisetup.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+unifisetup.bat
+```
+
+**Features:**
+- Unifi Controller installation
+- Dependency setup
+- Service configuration
+
+---
+
+### Uniform Server Configuration
+
+Configure Uniform Server (MySQL/Apache) with custom ports and run modes.
+
+**Download:**
+```batch
+curl -o uzeroconf.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/uzeroconf.bat
+```
+
+**Usage:**
+```batch
+uzeroconf.bat
+```
+
+**Features:**
+- Change MySQL port
+- Change Apache port
+- Set portable mode
+- Set permanent installation
+- Configure system startup
+
+---
+
+### VTools QEMU/KVM
+
+Setup virtualization tools (Spice, VirtIO, WinFsp) as Windows services.
+
+**Download:**
+```batch
+curl -o vtools.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/vtools.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+vtools.bat
+```
+
+**Features:**
+- Spice guest tools
+- VirtIO drivers
+- WinFsp installation
+- Service configuration
+
+---
+
+### WMIC
+
+Add or remove WMIC (Windows Management Instrumentation Command-line) tool.
+
+**Download:**
+```batch
+curl -o wmic.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/wmic.bat
+```
+
+**Usage:**
+```batch
+REM Run as Administrator
+wmic.bat add     REM Install WMIC
+wmic.bat remove  REM Remove WMIC
+```
+
+**Features:**
+- WMIC installation
+- WMIC removal
+- Windows 11 compatibility
+
+<Note>
+WMIC is deprecated in Windows 11 but can be restored for legacy script compatibility.
+</Note>
+
+## General Usage Guidelines
+
+### Prerequisites
+
+- Windows 10 or Windows 11 (x64)
+- Administrator privileges
+- Execution policy configured for scripts
+
+### Running Batch Scripts
+
+1. **Download the script**
+   ```batch
+   curl -o script.bat https://raw.githubusercontent.com/maravento/vault/master/scripts/batch/script.bat
+   ```
+
+2. **Right-click and select "Run as administrator"**
+   
+   Or from an elevated command prompt:
+   ```batch
+   script.bat
+   ```
+
+### Safety Tips
+
+<Warning>
+- Always review script contents before execution
+- Create system restore point before running system modification scripts
+- Test in a non-production environment first
+- Keep backups of important data and configurations
+</Warning>
+
+## Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="System Troubleshooting" icon="wrench">
+    - **FixPrint**: Resolve print spooler issues
+    - **Net Reset**: Fix network connectivity problems
+    - **Safe Boot**: Boot into safe mode for troubleshooting
+  </Accordion>
+
+  <Accordion title="Performance Optimization" icon="gauge-high">
+    - **Non-Essential Services**: Disable unnecessary services
+    - **NVMe Optimizer**: Optimize NVMe drive performance
+  </Accordion>
+
+  <Accordion title="System Configuration" icon="gear">
+    - **SMB Config**: Configure file sharing protocols
+    - **WMIC**: Manage WMIC availability
+  </Accordion>
+
+  <Accordion title="Backup & Recovery" icon="floppy-disk">
+    - **Regedit Backup**: Backup Windows Registry
+    - **Mozilla Thunderbird Backup**: Backup email profiles
+  </Accordion>
+
+  <Accordion title="Server Setup" icon="server">
+    - **Unifi Network Server**: Setup Unifi Controller
+    - **Uniform Server**: Configure portable web server
+    - **VTools**: Install virtualization guest tools
+  </Accordion>
+</AccordionGroup>
+
+## Download All Batch Scripts
+
+Use the Python gitfolder utility to download all batch scripts:
+
+```batch
+REM Download gitfolder.py first
+curl -o gitfolder.py https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+
+REM Install Python 3 if not already installed, then:
+python gitfolder.py https://github.com/maravento/vault/scripts/batch
+```
+
+## License
+
+- [GPL-3.0](https://www.gnu.org/licenses/gpl.txt)
+- [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+<Warning>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Always test in a safe environment first.
+</Warning>

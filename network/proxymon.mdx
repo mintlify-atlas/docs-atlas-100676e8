@@ -1,0 +1,456 @@
+---
+title: 'Proxy Monitor'
+description: 'Squid proxy monitoring suite with traffic analysis and reporting'
+icon: 'chart-line'
+---
+
+<Note>
+  **Status**: Release Candidate - Production-ready with ongoing improvements
+</Note>
+
+## Overview
+
+Proxy Monitor is a web application designed to work exclusively with the [Squid-Cache](https://www.squid-cache.org/) proxy server and requires the [Apache2](https://httpd.apache.org/) web server. It reads traffic information from Squid's `access.log` to generate detailed statistics and usage reports for the local network.
+
+<Info>
+  Use the tabs at the top of the dashboard to access each analysis module: Monitor (Squidmon), Traffic (LightSquid), Reports (SARG), Realtime (SqStat), Analyzer (SquidAnalyzer), and LogView.
+</Info>
+
+## System Requirements
+
+| Component | Requirement |
+|-----------|-------------|
+| **OS** | Ubuntu 24.04.x |
+| **CPU** | Intel Core i5/Xeon/AMD Ryzen 5 (≥ 3.0 GHz) |
+| **RAM** | 16 GB |
+| **Storage** | 2 GB SSD |
+| **Dependencies** | Squid Cache v6.13, Apache v2.4.58, PHP 8.3.6 |
+
+<Warning>
+  If any IP addresses on your local network do not go through the Squid proxy, they will not appear in the reports.
+</Warning>
+
+## Installation
+
+### Download Project
+
+```bash
+sudo apt install -y python-is-python3
+wget -qO gitfolder.py https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+chmod +x gitfolder.py
+python gitfolder.py https://github.com/maravento/vault/proxymon
+```
+
+### Run Installation Script
+
+```bash
+wget -O proxymon.sh https://raw.githubusercontent.com/maravento/vault/refs/heads/master/proxymon/proxymon.sh
+sudo chmod +x proxymon.sh
+sudo ./proxymon.sh
+```
+
+### Installation Options
+
+The installation script supports multiple modes:
+
+```bash
+# Interactive menu (default)
+sudo ./proxymon.sh
+
+# Direct installation
+sudo ./proxymon.sh install
+
+# Direct uninstallation
+sudo ./proxymon.sh uninstall
+
+# Show help
+sudo ./proxymon.sh --help
+```
+
+## Access URLs
+
+<CardGroup cols={2}>
+  <Card title="Proxy Monitor" icon="chart-mixed" href="http://localhost:18080">
+    Main dashboard with all monitoring modules
+  </Card>
+  <Card title="Warning Portal" icon="triangle-exclamation" href="http://localhost:18081">
+    Quota limit notification portal
+  </Card>
+</CardGroup>
+
+## Modules
+
+### 1. Monitor (Squidmon)
+
+Squidmon provides detailed real-time traffic analysis and monitoring of your Squid proxy. It displays comprehensive statistics including blocked domains, blocked clients, traffic patterns, and ACL matching information.
+
+#### Key Features
+
+- **Top Blocked Domains**: Shows most frequently blocked domains with request counts
+- **Top Blocked Clients**: Displays client IPs with highest blocked request percentages
+- **Traffic by Client IP**: Expandable view of all client traffic statistics
+- **ACL Filtering**: Filter traffic by Blocked TLD, Blocked Sites, Blocked Patterns, Block IPv4, or Unknown ACL
+- **Search Functionality**: Find specific IPs or domains quickly
+- **Time Range Reports**: Last 24 Hours, Last 7 Days, Last 30 Days
+- **PDF Report Generation**: Create detailed reports for auditing
+- **Blocked URLs Analysis**: Granular details on blocked content per client
+
+#### Configuration
+
+Default ACL path is `/etc/acl` with these integrated lists:
+
+```bash
+/etc/acl/blocktlds.txt=Blocked TLD
+/etc/acl/blocksites.txt=Blocked Sites
+regex:^(http|https)://[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+=Block IPv4
+```
+
+<Warning>
+  Default values are **24 hours** and **50,000 lines** from access.log. Increasing these values may slow down the module and raise system resource usage.
+</Warning>
+
+#### Squid Configuration Example
+
+ACLs must be declared in both Squidmon and `squid.conf`:
+
+```bash squid.conf
+sudo nano /etc/squid/squid.conf
+
+# Block: TLDs
+acl blocktlds dstdomain "/etc/acl/blocktlds.txt"
+http_access deny workdays blocktlds
+
+# Block: sites
+acl blocksites dstdomain "/etc/acl/blocksites.txt"
+http_access deny workdays blocksites
+
+# Block: IPv4
+acl no_ip url_regex -i ^(http|https)://[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+
+http_access deny no_ip
+```
+
+#### Logrotate Configuration
+
+<Info>
+  Squidmon reads only the current `access.log` file, not rotated files. Configure logrotate properly to maintain historical data.
+</Info>
+
+```bash
+# Disable Squid internal rotation
+sudo nano /etc/squid/squid.conf
+logfile_rotate 0
+
+# Configure logrotate for weekly or monthly rotation
+sudo sed -i 's/^\tdaily$/\tweekly/' /etc/logrotate.d/squid
+# or
+sudo sed -i 's/^\tdaily$/\tmonthly/' /etc/logrotate.d/squid
+
+# Keep 7 rotated files
+sudo sed -i 's/rotate 2/rotate 7/' /etc/logrotate.d/squid
+```
+
+### 2. Traffic (LightSquid)
+
+LightSquid provides fast traffic reports with per-user statistics and daily/monthly traffic analysis.
+
+#### Features
+
+- General statistics with searchable tables
+- Per-user bandwidth tracking
+- Daily and monthly traffic reports
+- Export to PDF, Excel (XLSX), and CSV formats
+- Traffic search across historical data
+- Bandwidth quota monitoring
+
+#### First Run
+
+If you see an error on first access, generate reports manually:
+
+```bash
+sudo /var/www/proxymon/lightsquid/lightparser.pl today
+```
+
+#### Cron Job Configuration
+
+Reports are generated every 10 minutes by default:
+
+```bash
+sudo -u www-data crontab -e
+*/10 * * * * /var/www/proxymon/lightsquid/lightparser.pl today
+```
+
+#### User Management
+
+**Add Users Manually:**
+
+```bash
+sudo nano /var/www/proxymon/lightsquid/realname.cfg
+# Example:
+192.168.X.2 Client1
+192.168.X.3 CEO
+```
+
+**Exclude Users:**
+
+```bash
+sudo nano /var/www/proxymon/lightsquid/skipuser.cfg
+# Example:
+192.168.X.1
+```
+
+#### Bandwidth Limits
+
+Configure daily traffic limits in `lightsquid.cfg`:
+
+```bash
+sudo nano /var/www/proxymon/lightsquid/lightsquid.cfg
+
+# Nomenclature: 10 = 10 MB, 512 = 512 MB, 1000 = 1 GB
+# Default: 1000 (1 GB per day)
+$perusertrafficlimit = 1000*1024*1024;
+```
+
+#### Network Scanning
+
+Discover devices on your network:
+
+```bash
+# Install scanning tools
+sudo apt install -y nbtscan nmap arp-scan nast netdiscover
+
+# Scan using different methods
+sudo nbtscan 192.168.X.0/24
+sudo nmap -sn 192.168.X.0/24
+sudo arp-scan --localnet
+sudo nast -m
+sudo netdiscover
+```
+
+### 3. BanData (Bandwidth Control)
+
+BanData automatically blocks IPs that exceed daily, weekly, or monthly data quotas.
+
+<Info>
+  Weekends are excluded from calculations. Limits must match those configured in LightSquid.
+</Info>
+
+#### Cron Configuration
+
+```bash
+sudo crontab -e
+*/12 * * * * /var/www/proxymon/tools/bandata.sh
+```
+
+#### Data Limits
+
+Default limits (configurable in `/var/www/proxymon/tools/bandata.sh`):
+
+```bash
+# Daily limit (default: 1 GB)
+max_bandwidth_day="1G"
+
+# Weekly limit (default: 5 GB) - Monday to Friday only
+max_bandwidth_week="5G"
+
+# Monthly limit (default: 20 GB) - Weekdays only
+max_bandwidth_month="20G"
+```
+
+<Tip>
+  You can specify limits in GBytes (1G), MBytes (512M), or Bytes (536870912).
+</Tip>
+
+#### Check Banned IPs
+
+```bash
+cat /etc/acl/{banmonth,banweek,banday}.txt | uniq
+```
+
+#### Warning Portal
+
+When users exceed quotas, they're redirected to:
+
+```
+http://localhost:18081 or http://192.168.X.X:18081
+```
+
+### 4. Reports (SARG)
+
+SARG (Squid Analysis Report Generator) provides detailed analysis of proxy traffic with comprehensive user activity reports.
+
+#### Features
+
+- **Global Reports**: Aggregated statistics across all users
+- **Per-IP Reports**: Individual user browsing activity
+- **Bandwidth Analysis**: Traffic consumption and patterns
+- **Cache Efficiency**: Hit rates and cache performance
+- **Connection Statistics**: Request counts and connection frequency
+
+#### Report Retention
+
+SARG keeps the last 7 days of logs by default:
+
+```bash
+sudo nano /etc/sarg/sarg.conf
+lastlog 7
+```
+
+Automatic cleanup removes reports older than 30 days:
+
+```bash
+sudo -u www-data crontab -l
+@weekly find /var/www/proxymon/sarg/squid-reports -name "2*" -mtime +30 -type d -exec rm -rf "{}" \; &> /dev/null
+```
+
+### 5. Realtime (SqStat)
+
+SqStat provides real-time monitoring of active Squid connections using the cachemgr protocol.
+
+#### Features
+
+- Real-time active connection monitoring
+- Auto-refresh (configurable: 5s, 10s, 30s, 60s)
+- Light and dark theme support
+- Current bandwidth usage
+- Active user tracking
+
+#### Theme Switching
+
+```bash
+# Dark Theme (Default)
+sudo sed -i "s/sqstat\.css/sqstat-dark.css/" /var/www/proxymon/sqstat/sqstat.class.php
+
+# Light Theme
+sudo sed -i "s/sqstat-dark\.css/sqstat.css/" /var/www/proxymon/sqstat/sqstat.class.php
+```
+
+### 6. Analyzer (SquidAnalyzer)
+
+SquidAnalyzer provides graphical traffic statistics and usage trends.
+
+#### Features
+
+- Real-time connection monitoring
+- Active connections and users display
+- Bandwidth speed calculation (current and average)
+- IP to hostname resolution
+- Connection duration tracking
+- Data transfer size monitoring
+- Auto-refresh capability
+- Session-based analytics
+
+#### Cron Configuration
+
+```bash
+sudo -u www-data crontab -e
+0 2 * * * cd /var/www/proxymon/squidanalyzer && perl -I. ./squid-analyzer -d > /dev/null 2>&1
+```
+
+### 7. LogView
+
+Real-time Squid proxy log viewer with instant filtering and search capabilities.
+
+#### Features
+
+- Real-time log parsing from `/var/log/squid/access.log`
+- Instant full-text search
+- Filter by cache code (TCP_HIT, TCP_MISS, TCP_DENIED, etc.)
+- Filter by HTTP status (200, 206, 301, 302, 400, 403, 404, 500)
+- Column sorting
+- Configurable line count (500, 1000, 2000, 5000)
+- Auto-refresh (1s, 3s, 5s, 10s, 30s)
+- Light/dark theme
+- Live polling with visual indicators
+
+## Configuration Locations
+
+| Module | Configuration Path |
+|--------|-------------------|
+| Squidmon | Web interface: Config tab |
+| LightSquid | `/var/www/proxymon/lightsquid/lightsquid.cfg` |
+| SARG | `/etc/sarg/sarg.conf` |
+| SqStat | `/var/www/proxymon/sqstat/sqstat.class.php` |
+| BanData | `/var/www/proxymon/tools/bandata.sh` |
+| Squid ACLs | `/etc/acl/` |
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="No data in reports">
+    - Verify Squid is running: `systemctl status squid`
+    - Check traffic is flowing through proxy
+    - Run LightSquid parser manually: `sudo /var/www/proxymon/lightsquid/lightparser.pl today`
+    - Verify `/var/log/squid/access.log` contains entries
+  </Accordion>
+  
+  <Accordion title="SqStat shows connection error">
+    - Wait 1-2 minutes after Squid restart/reload
+    - Press F5 to refresh the page
+    - Verify Squid cachemgr is accessible
+    - Check large ACL files aren't delaying Squid startup
+  </Accordion>
+  
+  <Accordion title="Squidmon search is slow">
+    - Reduce the time range (use Last 24 Hours instead of 30 Days)
+    - Decrease max lines from 50,000 to 10,000
+    - Use "Reset to Default" button to restore optimal settings
+    - Consider log rotation settings
+  </Accordion>
+  
+  <Accordion title="BanData not blocking users">
+    - Verify cron job is configured: `sudo crontab -l`
+    - Check ACL files exist: `ls -l /etc/acl/ban*.txt`
+    - Verify bandwidth limits are set correctly
+    - Check Squid configuration includes ban ACLs
+    - Review bandata script logs
+  </Accordion>
+</AccordionGroup>
+
+## Performance Tips
+
+<CardGroup cols={2}>
+  <Card title="Optimize Log Analysis" icon="gauge-high">
+    - Use weekly/monthly log rotation
+    - Limit Squidmon to 24-hour windows
+    - Configure SARG retention to 7 days
+    - Clean old reports regularly
+  </Card>
+  
+  <Card title="Reduce Resource Usage" icon="memory">
+    - Adjust cron frequencies based on network size
+    - Use compressed log rotation
+    - Limit concurrent report generation
+    - Monitor Apache/PHP memory limits
+  </Card>
+  
+  <Card title="Improve Search Speed" icon="magnifying-glass">
+    - Use Traffic Search for historical data
+    - Use Squidmon Search for real-time analysis
+    - Index frequently accessed reports
+    - Optimize ACL file sizes
+  </Card>
+  
+  <Card title="Maintain Data Quality" icon="database">
+    - Regularly update realname.cfg
+    - Keep skipuser.cfg current
+    - Validate ACL rules periodically
+    - Monitor disk space for reports
+  </Card>
+</CardGroup>
+
+## License
+
+<CardGroup cols={2}>
+  <Card title="GPL-3.0" icon="scale-balanced">
+    Licensed under GNU General Public License v3.0
+  </Card>
+  <Card title="CC BY-SA 4.0" icon="creative-commons">
+    Documentation under Creative Commons Attribution-ShareAlike 4.0
+  </Card>
+</CardGroup>
+
+## Disclaimer
+
+<Warning>
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</Warning>

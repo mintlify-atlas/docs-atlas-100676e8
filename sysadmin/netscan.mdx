@@ -1,0 +1,240 @@
+---
+title: NetScan
+description: Network scanning tool using Nmap with GUI interface for Windows and Linux
+---
+
+# NetScan
+
+NetScan is a portable tool for network scanning using Nmap on Windows, with an alternative GUI frontend based on Zenity. It deploys Nmap with all its dependencies silently and unattended, and allows executing different scanning levels while generating HTML reports.
+
+## Features
+
+<CardGroup cols={3}>
+  <Card title="Portable" icon="briefcase">
+    No installation required - runs directly from extraction
+  </Card>
+  <Card title="Silent Deployment" icon="volume-xmark">
+    Automatically installs Nmap and dependencies
+  </Card>
+  <Card title="HTML Reports" icon="file-code">
+    Generates detailed scan reports in HTML format
+  </Card>
+</CardGroup>
+
+## Windows Version
+
+### Download
+
+| File | OS | Size |
+| --- | --- | --- |
+| [netscan.exe (.zip)](https://mega.nz/file/2Z8ShAwD#02jFrwjB9qM55kIWZOf525s8wKGYLGDpbLd1D6O4dKc) | Windows 10/11 x64 | 78.2 MB |
+
+### Package Contents
+
+- Nmap - Network scanning engine
+- Npcap - Packet capture library
+- libxslt (xsltproc) - XSLT processor for report generation
+- Microsoft Visual C++ Runtimes - Required dependencies
+
+<Warning>
+  **Before Installation:** If you have Nmap or Npcap already installed, uninstall them before using NetScan to avoid version conflicts.
+</Warning>
+
+### Installation and Usage
+
+<Steps>
+  <Step title="Prepare System">
+    1. Disable Antivirus, Antimalware, and SmartScreen temporarily
+    2. Close all applications
+    3. Verify system date and time are correct
+    4. Connect to your data network
+  </Step>
+  
+  <Step title="Extract and Run">
+    1. Unzip `netscan.exe (.zip)` to your desktop
+    2. Double-click the executable
+    3. Accept privileged execution when prompted
+  </Step>
+  
+  <Step title="Network Connection">
+    Connect to your network when prompted, then click OK to continue.
+    
+    ![Welcome Screen](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-welcome.png)
+  </Step>
+  
+  <Step title="Select Scan Mode">
+    Choose the appropriate scan mode for your needs.
+    
+    ![Scan Selector](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-selector.png)
+  </Step>
+  
+  <Step title="Npcap Installation">
+    Manually complete the Npcap installation when prompted.
+    
+    ![Npcap Installation](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-npcap.png)
+    
+    <Note>
+      Npcap free version is included, which supports up to 5 machines. The OEM version with silent installation is not available in the free tier.
+    </Note>
+  </Step>
+  
+  <Step title="Review Results">
+    Scan reports are saved to `Desktop\Report` folder with timestamps.
+    
+    ![Report Example](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-report.png)
+  </Step>
+</Steps>
+
+## Scanning Modes
+
+<Tabs>
+  <Tab title="LAN Scan">
+    **Quick Network Discovery**
+    
+    ```bash
+    nmap -sS -T4 -F -sV
+    ```
+    
+    - Fast network scan
+    - Service version detection
+    - Ideal for quick inventory
+  </Tab>
+  
+  <Tab title="Advanced LAN Scan">
+    **Deep Network Analysis**
+    
+    ```bash
+    nmap -sS -T4 -F -sV -sC --max-retries 3 --host-timeout 5m
+    ```
+    
+    - Deep scanning with NSE scripts
+    - Service enumeration
+    - Timeout controls
+  </Tab>
+  
+  <Tab title="IP Scan">
+    **Comprehensive Host Audit**
+    
+    ```bash
+    nmap -sS -T4 -F -sV --version-intensity 8 -sC -O \
+      --script vuln --traceroute -oA scan_ip \
+      --max-retries 3 --host-timeout 10m
+    ```
+    
+    - OS detection
+    - Vulnerability scanning
+    - Detailed service enumeration
+    - Network traceroute
+    - Single host focus (no ranges)
+  </Tab>
+</Tabs>
+
+## Scan Messages
+
+<AccordionGroup>
+  <Accordion title="Progress Messages">
+    | Message | Description |
+    |---------|-------------|
+    | ![IP Scan](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-ipscan.png) | Enter specific IPv4 (ranges not accepted) |
+    | ![Invalid IP](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-invalidip.png) | Invalid IPv4 address entered |
+    | ![Scanning](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-scanning.png) | Scanning in progress |
+    | ![Advanced](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-advanced.png) | Intense scan running |
+    | ![Complete](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-end.png) | Scan completed successfully |
+  </Accordion>
+  
+  <Accordion title="Error Messages">
+    | Message | Description |
+    |---------|-------------|
+    | ![Canceled](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-cancel.png) | Installation canceled or error occurred |
+    | ![Dependencies Error](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-errordependencies.png) | Dependency installation failed |
+    | ![No Internet](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-nointernet.png) | No internet connectivity detected |
+    | ![OS Incompatible](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-osincompatible.png) | Incompatible operating system |
+  </Accordion>
+  
+  <Accordion title="Installation Messages">
+    | Message | Description |
+    |---------|-------------|
+    | ![Extracting](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-extract.png) | Extracting NetScan content |
+    | ![Visual C++](https://raw.githubusercontent.com/maravento/vault/master/netscan/img/netscan-visual.png) | Installing MS Visual C++ Runtimes |
+  </Accordion>
+</AccordionGroup>
+
+## Linux Version
+
+NetScan can run on Linux with the same three scan modes. Reports are saved to `/home/$USER/Report` with timestamps.
+
+### Quick Start
+
+```bash
+# Download and run
+wget -q https://raw.githubusercontent.com/maravento/vault/master/netscan/linux/netreport.sh -O netreport.sh
+chmod +x netreport.sh
+sudo ./netreport.sh
+```
+
+### Scan Options
+
+1. **LAN Scan** - Fast network discovery
+2. **Advanced LAN Scan** - Deep network analysis  
+3. **IP Scan** - Comprehensive single-host audit
+
+## Output Reports
+
+Reports are saved with timestamps for easy tracking:
+
+**Windows:** `Desktop\Report\`  
+**Linux:** `/home/$USER/Report/`
+
+**Filename format:**
+```
+scan_type_YYYY_MM_DD_HH_MM_SS.html
+```
+
+## About Npcap Licensing
+
+<Note>
+  NetScan includes Npcap's free version, which:
+  - Allows use on up to 5 machines
+  - Does not support silent installation (`/S` option)
+  - Requires manual installation during setup
+  
+  For OEM licensing with silent installation support, see [Npcap OEM](https://npcap.com/oem/).
+</Note>
+
+## Telemetry
+
+NetScan sends anonymous installation completion data for statistical purposes only. No personal data is collected.
+
+**Example telemetry:**
+
+```
+Package Installation
+Hostname=DESKTOP-AJ4JSC8
+User=User
+Date=mié. 13/11/2024 Time= 6:44:17,39
+Status=Installed
+Package: NetScan
+```
+
+## System Requirements
+
+### Windows
+- **OS:** Windows 10/11 x64
+- **Privileges:** Administrator rights required
+- **Network:** Active network connection
+
+### Linux  
+- **OS:** Ubuntu/Debian-based distributions
+- **Privileges:** sudo access required
+- **Dependencies:** Nmap (auto-installed)
+
+## Additional Resources
+
+<CardGroup cols={2}>
+  <Card title="Nmap Documentation" icon="book" href="https://nmap.org/docs.html">
+    Official Nmap reference and guides
+  </Card>
+  <Card title="Npcap Guide" icon="network-wired" href="https://npcap.com/#documentation">
+    Npcap installation and usage
+  </Card>
+</CardGroup>

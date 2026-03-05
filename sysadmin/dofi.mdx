@@ -1,0 +1,388 @@
+---
+title: DoFi
+description: Domain filtering tools for removing overlapping domains and TLD validation
+---
+
+# DoFi
+
+**Domain Filtering** - A collection of Python and Bash scripts for validating, filtering, and checking domain lists.
+
+## Overview
+
+DoFi provides two main tools:
+
+<CardGroup cols={2}>
+  <Card title="Domain Filter" icon="filter">
+    Python script that validates TLDs, removes overlapping domains, and filters invalid entries
+  </Card>
+  <Card title="Domain Check" icon="magnifying-glass">
+    Bash script that verifies domain existence using the host command
+  </Card>
+</CardGroup>
+
+## Download Project
+
+```bash
+sudo apt install -y python-is-python3
+wget -qO gitfolder.py https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+chmod +x gitfolder.py
+python gitfolder.py https://github.com/maravento/vault/dofi
+```
+
+## Requirements
+
+- **Python:** 3.12.3 or later
+- **Bash:** 5.2.21 or later
+- **Tested on:** Ubuntu 22.04/24.04 x64
+
+<Warning>
+  **Input Format:** Ensure your domain list has no `http://`, `https://`, or `www.` prefixes before processing.
+</Warning>
+
+## Domain Filter (Python)
+
+Advanced domain filtering with TLD validation and overlap removal.
+
+### Features
+
+The Python script performs comprehensive domain filtering:
+
+<Steps>
+  <Step title="TLD Collection">
+    Downloads public suffix TLDs from multiple authoritative sources
+  </Step>
+  <Step title="TLD Validation">
+    Removes invalid or duplicate TLDs from the collection
+  </Step>
+  <Step title="Domain Validation">
+    Filters domains to ensure they end with a valid TLD
+  </Step>
+  <Step title="Overlap Removal">
+    Removes overlapping domains (e.g., keeps `example.com` and removes `sub.example.com` if both exist)
+  </Step>
+  <Step title="Duplicate Exclusion">
+    Excludes duplicates from previously validated domains
+  </Step>
+  <Step title="Output Generation">
+    Saves cleaned domains and removed entries to separate files
+  </Step>
+</Steps>
+
+### Basic Usage
+
+```bash
+# Download the script
+wget -qO domfilter.py https://raw.githubusercontent.com/maravento/vault/master/dofi/domfilter.py
+
+# Run with your domain list
+python domfilter.py --input mylst.txt
+```
+
+### Output Files
+
+<Tabs>
+  <Tab title="Default Output">
+    By default, the script creates:
+    
+    - `output.txt` - Validated and filtered domains
+    - `removed.txt` - Domains that were filtered out
+  </Tab>
+  
+  <Tab title="Custom Output">
+    Customize output file names:
+    
+    ```bash
+    python domfilter.py --input mylst.txt \
+      --output outlst.txt \
+      --remove removelst.txt
+    ```
+  </Tab>
+</Tabs>
+
+### TLD Coverage
+
+The filter validates against comprehensive TLD sources:
+
+- **ccTLDs** - Country code top-level domains
+- **gTLDs** - Generic top-level domains
+- **sTLDs** - Sponsored top-level domains
+- **eTLDs** - Effective top-level domains
+- **4LDs** - Four-level domains
+
+All TLDs are saved to `tlds.txt` during processing.
+
+### Example
+
+```bash
+# Input file: domains.txt
+example.com
+sub.example.com
+invalid-domain.xyz123
+test.org
+
+# Run filter
+python domfilter.py --input domains.txt
+
+# Output (output.txt):
+example.com
+test.org
+
+# Removed (removed.txt):
+sub.example.com  # Overlapping with example.com
+invalid-domain.xyz123  # Invalid TLD
+```
+
+## Domain Check (Bash)
+
+Verifies domain existence using DNS lookups.
+
+### Features
+
+The Bash script checks domain validity:
+
+- Uses `host` command for DNS verification
+- Parallel processing for speed
+- Separates valid and invalid domains
+- Generates difference report
+
+### Basic Usage
+
+```bash
+# Download the script
+wget -qO domcheck.sh https://raw.githubusercontent.com/maravento/vault/master/dofi/domcheck.sh
+chmod +x domcheck.sh
+
+# Run with your domain list
+./domcheck.sh my_domain_list.txt
+```
+
+### Output Files
+
+The script generates three output files:
+
+<CardGroup cols={3}>
+  <Card title="hit.txt" icon="circle-check">
+    Existing domains verified via DNS
+  </Card>
+  <Card title="fault.txt" icon="circle-xmark">
+    Non-existent domains that failed verification
+  </Card>
+  <Card title="outdiff.txt" icon="code-compare">
+    Difference between input and output
+  </Card>
+</CardGroup>
+
+### Parallel Processing
+
+Control the number of parallel checks:
+
+```bash
+# Default: 100 parallel processes
+./domcheck.sh my_domain_list.txt
+
+# Custom: 50 parallel processes
+./domcheck.sh my_domain_list.txt 50
+```
+
+<Note>
+  Adjust the parallel process count based on your system resources and network capacity. Higher values = faster processing but more resource usage.
+</Note>
+
+### Example
+
+```bash
+# Input file: check_domains.txt
+google.com
+example-does-not-exist-12345.com
+github.com
+
+# Run check
+./domcheck.sh check_domains.txt
+
+# Results:
+# hit.txt:
+google.com
+github.com
+
+# fault.txt:
+example-does-not-exist-12345.com
+
+# outdiff.txt:
+# Shows detailed differences
+```
+
+## Workflow Examples
+
+### Complete Domain Cleaning
+
+Combine both tools for comprehensive cleaning:
+
+```bash
+# Step 1: Filter and validate TLDs
+python domfilter.py --input raw_domains.txt --output filtered.txt
+
+# Step 2: Verify domain existence
+./domcheck.sh filtered.txt
+
+# Final result in hit.txt - fully validated, existing domains
+```
+
+### Large List Processing
+
+```bash
+# Process large lists efficiently
+python domfilter.py --input huge_list.txt --output stage1.txt
+./domcheck.sh stage1.txt 200  # Increase parallel processes
+```
+
+## TLD Data Sources
+
+DoFi pulls TLD data from authoritative sources:
+
+<CardGroup cols={2}>
+  <Card title="IANA" icon="globe" href="https://data.iana.org/TLD/tlds-alpha-by-domain.txt">
+    Official IANA TLD list
+  </Card>
+  <Card title="Public Suffix" icon="list" href="https://github.com/publicsuffix/list/blob/master/public_suffix_list.dat">
+    Mozilla's public suffix list
+  </Card>
+  <Card title="WHOIS XML API" icon="database" href="https://www.whoisxmlapi.com/support/supported_gtlds.php">
+    Supported gTLD database
+  </Card>
+  <Card title="Blackweb TLDs" icon="shield" href="https://github.com/maravento/blackweb/blob/master/bwupdate/lst/tldsappx.txt">
+    Extended TLD appendix
+  </Card>
+</CardGroup>
+
+## Performance Tips
+
+<AccordionGroup>
+  <Accordion title="Python Script Optimization">
+    For large domain lists (millions of entries):
+    
+    - Run on systems with adequate RAM (4GB+ recommended)
+    - Use SSD storage for faster I/O
+    - TLD cache is created once and reused
+  </Accordion>
+  
+  <Accordion title="Bash Script Optimization">
+    For efficient domain checking:
+    
+    - Increase parallel processes on powerful systems
+    - Use reliable DNS servers
+    - Consider network bandwidth limits
+    - Monitor system load during processing
+    
+    ```bash
+    # Monitor performance
+    ./domcheck.sh large_list.txt 150 &
+    watch -n 1 'wc -l hit.txt fault.txt'
+    ```
+  </Accordion>
+  
+  <Accordion title="Combined Workflow">
+    Optimize the full pipeline:
+    
+    ```bash
+    # Filter first (fast, local)
+    time python domfilter.py --input raw.txt --output filtered.txt
+    
+    # Then check (slower, network-dependent)
+    time ./domcheck.sh filtered.txt 100
+    ```
+    
+    This approach minimizes network checks by filtering invalid entries first.
+  </Accordion>
+</AccordionGroup>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Blocklist Maintenance" icon="ban">
+    Clean and validate domain blocklists before deployment
+  </Card>
+  <Card title="SEO Analysis" icon="chart-line">
+    Verify domain lists for SEO tools and analysis
+  </Card>
+  <Card title="Security Research" icon="shield-halved">
+    Validate threat intelligence domain feeds
+  </Card>
+  <Card title="DNS Administration" icon="server">
+    Maintain clean DNS zone files and records
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="TLD Download Failures">
+    If TLD sources are unavailable:
+    
+    - Check internet connectivity
+    - Verify firewall/proxy settings
+    - Script will use cached TLDs if available
+  </Accordion>
+  
+  <Accordion title="Domain Check Timeouts">
+    If domain checks are slow or timing out:
+    
+    - Reduce parallel processes
+    - Check DNS server responsiveness
+    - Consider using local DNS cache
+    
+    ```bash
+    # Test DNS performance
+    time host google.com
+    
+    # Use fewer parallel processes
+    ./domcheck.sh domains.txt 25
+    ```
+  </Accordion>
+  
+  <Accordion title="Memory Issues">
+    For very large lists:
+    
+    - Split input files into smaller chunks
+    - Process in batches
+    - Increase system swap if needed
+    
+    ```bash
+    # Split large file
+    split -l 100000 huge_list.txt chunk_
+    
+    # Process each chunk
+    for file in chunk_*; do
+      python domfilter.py --input $file --output filtered_$file
+    done
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<Steps>
+  <Step title="Prepare Input">
+    Clean input files before processing:
+    - Remove `http://`, `https://`, `www.` prefixes
+    - Convert to lowercase
+    - Remove duplicates
+    - One domain per line
+  </Step>
+  
+  <Step title="Run Domain Filter">
+    Use Python script first to validate TLDs and remove overlaps
+  </Step>
+  
+  <Step title="Run Domain Check">
+    Verify filtered domains actually exist via DNS
+  </Step>
+  
+  <Step title="Review Results">
+    Check removed entries for false positives before finalizing
+  </Step>
+</Steps>
+
+## License
+
+[![GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl.txt)
+[![CC BY-SA 4.0](https://img.shields.io/badge/License-CC_BY--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)

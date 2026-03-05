@@ -1,0 +1,148 @@
+---
+title: Scripts & Utilities Overview
+description: Comprehensive collection of automation scripts and utilities for Linux and Windows systems
+icon: code
+---
+
+## Overview
+
+The maravento/vault scripts collection provides a comprehensive set of automation tools and utilities for system administration, networking, security, and daily operations across Linux and Windows platforms.
+
+<CardGroup cols={2}>
+  <Card title="Bash Scripts" icon="terminal" href="/scripts/bash">
+    50+ Linux scripts for system management, networking, cloud storage, and virtualization
+  </Card>
+  <Card title="Batch Scripts" icon="windows" href="/scripts/batch">
+    Windows administration tools for system configuration and maintenance
+  </Card>
+  <Card title="Python Utilities" icon="python" href="/scripts/python">
+    Cross-platform Python tools for email scanning, Git operations, and link checking
+  </Card>
+  <Card title="VBScript Tools" icon="file-code" href="/scripts/vbs">
+    Windows automation scripts for system configuration
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+### Download Individual Scripts
+
+All scripts are available directly from the GitHub repository:
+
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/bash/<script-name>.sh
+chmod +x <script-name>.sh
+./<script-name>.sh
+```
+
+### Download Entire Scripts Folder
+
+Use the `gitfolder.py` utility to download the entire scripts directory:
+
+```bash
+sudo apt install -y python-is-python3
+wget -qO gitfolder.py https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+chmod +x gitfolder.py
+python gitfolder.py https://github.com/maravento/vault/scripts
+```
+
+## Script Categories
+
+### Bash Scripts (Linux)
+
+Tested on Ubuntu 22.04/24.04 x64
+
+<AccordionGroup>
+  <Accordion title="Application & Deployment" icon="rocket">
+    - Crypto price notifications
+    - Joomla CMS deployment
+    - RustDesk remote desktop client
+  </Accordion>
+
+  <Accordion title="Cloud & Backup" icon="cloud">
+    - FreeFileSync updates
+    - Google Drive mounting
+    - MEGAsync management
+    - Rclone cloud storage integration
+  </Accordion>
+
+  <Accordion title="Context Menu Tools" icon="mouse-pointer">
+    - File path operations
+    - Hash verification (MD5, SHA256)
+    - KDE Connect integration
+    - Mount management
+  </Accordion>
+
+  <Accordion title="Networking & Security" icon="shield">
+    - Android screen mirroring
+    - ARP monitoring
+    - Cloudflare tunnels
+    - VPN and firewall tools
+  </Accordion>
+
+  <Accordion title="Proxy" icon="server">
+    - Squid analysis tools
+    - SSL-bump configuration
+  </Accordion>
+
+  <Accordion title="Storage" icon="hard-drive">
+    - Disk health checking
+    - Encrypted drive management
+    - NTFS mounting
+    - System migration
+  </Accordion>
+
+  <Accordion title="System Management" icon="gear">
+    - Bandwidth monitoring
+    - CPU limiting
+    - Process management
+    - UPS integration
+  </Accordion>
+
+  <Accordion title="Virtualization" icon="cube">
+    - Docker and Portainer
+    - VirtualBox management
+    - VM operations
+  </Accordion>
+
+  <Accordion title="Webmin Modules" icon="globe">
+    - Netplan manager
+    - Services monitor
+    - Squid monitor
+  </Accordion>
+</AccordionGroup>
+
+### Batch Scripts (Windows)
+
+Tested on Windows 10/11 x64
+
+- Print queue management
+- Network configuration reset
+- Service optimization
+- Registry backup
+- Safe boot modes
+- SMB configuration
+
+### Python Utilities
+
+Tested on Ubuntu 22.04/24.04
+
+- **Email Scan**: Extract and replace email addresses in files
+- **Git Folder**: Download specific GitHub/GitLab folders (SVN replacement)
+- **Link Check**: Scan websites for broken links
+
+### VBScript Tools
+
+Tested on Windows 7/10/11 x64
+
+- Autorun management and security
+
+## License
+
+All scripts are licensed under:
+- [GPL-3.0](https://www.gnu.org/licenses/gpl.txt)
+- [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+<Warning>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Use at your own risk and always test in a development environment first.
+</Warning>

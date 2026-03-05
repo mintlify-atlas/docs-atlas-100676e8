@@ -1,0 +1,322 @@
+---
+title: Trek
+description: SQL database rescue tool for damaged databases that cannot be exported by traditional methods
+---
+
+<Warning>
+  **Deprecated:** This project has reached End-of-Life (EOL) / End-of-Support (EOS). No longer supported or updated.
+</Warning>
+
+# Trek
+
+Trek is a SQL database rescue tool designed for situations where database damage prevents export using traditional methods. It provides both SQL dump and raw database file backup/restore capabilities.
+
+## Overview
+
+Trek offers two approaches to database backup and recovery:
+
+<CardGroup cols={2}>
+  <Card title="DUMP Mode" icon="database">
+    Export/import MySQL databases in `.sql` format using mysqldump
+  </Card>
+  <Card title="RAW Mode" icon="folder">
+    Copy raw database files from `\mysql\data` folders using Robocopy
+  </Card>
+</CardGroup>
+
+## Download
+
+| File | OS | Size |
+| --- | --- | --- |
+| [trek.exe (.zip)](https://raw.githubusercontent.com/maravento/vault/master/trek/trek.zip) | Windows 7/10 x86 x64 | 3.6 MB |
+
+## Installation
+
+<Steps>
+  <Step title="Prepare System">
+    1. Disable Antivirus, Antimalware, and SmartScreen temporarily
+    2. Close all applications
+    3. Verify system date and time are correct
+  </Step>
+  
+  <Step title="Extract and Run">
+    1. Unzip `trek.exe (.zip)` to your desktop
+    2. Double-click the executable
+    3. Accept privileged execution when prompted
+  </Step>
+  
+  <Step title="Select Mode">
+    Choose between DUMP or RAW mode based on your needs.
+    
+    ![Mode Selector](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_selector.png)
+  </Step>
+</Steps>
+
+## DUMP Mode
+
+<Tabs>
+  <Tab title="Backup">
+    ### Backup Database
+    
+    Export a database to `.sql` format.
+    
+    ![DUMP Backup](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_dump_backup.png)
+    
+    **Steps:**
+    
+    1. Click **BACKUP** button
+    2. Enter MySQL connection details:
+       - Username
+       - Password  
+       - Database name
+    3. Wait for export to complete
+    4. Check `error.txt` for any issues
+    
+    **Output location:**  
+    `c:\TrekDump\dbname_YYYY_MM_DD_HH_MM_SS.sql`
+    
+    ![Backup Complete](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_dump_backup_end.png)
+  </Tab>
+  
+  <Tab title="Restore">
+    ### Restore Database
+    
+    Import a database from `.sql` file.
+    
+    **Steps:**
+    
+    1. Click **RESTORE** button
+    2. Select the `.sql` file location
+    
+    ![Select SQL File](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_sql_file.png)
+    
+    3. Enter MySQL connection details:
+       - Username
+       - Password
+       - Target database name
+    
+    ![DUMP Restore](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_dump_restore.png)
+    
+    4. Wait for import to complete
+    
+    ![Restore Complete](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_dump_restore_end.png)
+  </Tab>
+</Tabs>
+
+### DUMP Mode Requirements
+
+<Warning>
+  **Important:** MySQL service must be running before using DUMP options.
+</Warning>
+
+<AccordionGroup>
+  <Accordion title="User Permissions">
+    Create a MySQL user with maximum privileges. Do not use the `root` user.
+    
+    ```sql
+    CREATE USER 'backup_user'@'localhost' IDENTIFIED BY 'password';
+    GRANT ALL PRIVILEGES ON *.* TO 'backup_user'@'localhost';
+    FLUSH PRIVILEGES;
+    ```
+  </Accordion>
+  
+  <Accordion title="File Size Limits">
+    If importing large `.sql` files, you may encounter:
+    
+    ```
+    ERROR 2006 (HY000) at line NUMBER: MySQL server has gone away
+    ```
+    
+    **Solution:** Increase the `max_allowed_packet` parameter in `my.cnf` or `my.ini`:
+    
+    ```ini
+    max_allowed_packet = 100M
+    ```
+  </Accordion>
+  
+  <Accordion title="File Naming">
+    - The `.sql` file must not contain spaces or special characters
+    - Use underscores instead: `my_database_backup.sql`
+  </Accordion>
+  
+  <Accordion title="Database Creation">
+    Trek handles database creation intelligently:
+    
+    - If `.sql` file contains `CREATE DATABASE`, existing database is preserved
+    - Otherwise, Trek creates the database automatically
+    
+    ```bash
+    A database already exists in the file: dbfile.sql
+    The database will not be created: dbname
+    # or
+    There is no database in the file: dbfile.sql
+    The database will be created: dbname
+    ```
+  </Accordion>
+  
+  <Accordion title="Password Warning">
+    MySQL displays a warning because the password is entered on the command line:
+    
+    ![Warning](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_dump_warning.png)
+    
+    This is expected behavior and can be safely ignored.
+  </Accordion>
+</AccordionGroup>
+
+## RAW Mode
+
+Copies raw MySQL database files from `\mysql\data` to `%HOMEDRIVE%\TrekRAW` using Windows Robocopy.
+
+![RAW Mode](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_raw_ini.png)
+
+### RAW Mode Process
+
+<Steps>
+  <Step title="Select MySQL Folder">
+    Browse to your MySQL installation folder.
+    
+    ![Select Folder](https://raw.githubusercontent.com/maravento/vault/master/trek/img/trek_raw_folder.png)
+    
+    **Common MySQL paths:**
+    
+    ```bash
+    Wamp: \wamp64\bin\mysql\mysql(version)
+    Xamp: \xampp\mysql
+    UZero: \UniServerZ\core\mysql
+    MySQL Server (zip): \mysql\mysql(version)
+    MySQL Community: \Program Files\MySQL\MySQL(version)
+    ```
+  </Step>
+  
+  <Step title="Run Backup or Restore">
+    - **BACKUP:** Copies from MySQL data folder to `c:\TrekRAW`
+    - **RESTORE:** Copies from `c:\TrekRAW` to MySQL data folder
+  </Step>
+  
+  <Step title="Check Results">
+    Review the `Trek.txt` file on your desktop for operation details.
+  </Step>
+  
+  <Step title="Restart MySQL">
+    Manually start the MySQL Server service after completion.
+  </Step>
+</Steps>
+
+### RAW Mode Important Notes
+
+<Warning>
+  **Critical Limitations:**
+  
+  - Do not migrate databases with different structures
+  - SSL-related files (*.pem) are excluded and may cause access issues
+  - Uses Robocopy which has limitations
+  - Use at your own risk
+</Warning>
+
+<Note>
+  **SSL Certificate Warning:**
+  
+  RAW mode excludes SSL certificate files (.pem) because they are unique to each installation. After RESTORE, you may have issues accessing encrypted content.
+  
+  [More information](https://dba.stackexchange.com/a/267757/208609)
+</Note>
+
+### TrekRAW Folder
+
+The `TrekRAW` folder is automatically created at:
+
+```
+c:\TrekRAW
+```
+
+All backup and restore operations work within this folder.
+
+## Supported Stacks
+
+Trek works with all major Windows-based MySQL stacks:
+
+<CardGroup cols={3}>
+  <Card title="WampServer" icon="server">
+    Full WAMP stack support
+  </Card>
+  <Card title="XAMPP" icon="server">
+    Complete XAMPP compatibility
+  </Card>
+  <Card title="Uniform Server" icon="server">
+    UniServerZ support
+  </Card>
+</CardGroup>
+
+Also supports:
+- MySQL Server (no-install .zip package)
+- MySQL Community Server
+
+## Tools Used
+
+Trek leverages proven Windows and MySQL tools:
+
+- **MySQL Dump** - Official MySQL backup utility
+- **Robocopy** - Windows robust file copy utility
+- **WinZenity** - GUI dialog interface
+- **7zSFX Builder** - Self-extracting archive creation
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Database Corruption Recovery">
+    When MySQL databases are corrupted and standard tools fail, Trek's RAW mode can copy the underlying data files for recovery attempts.
+  </Accordion>
+  
+  <Accordion title="Quick Migration">
+    RAW mode provides fast database migration between identical MySQL versions without going through dump/restore.
+  </Accordion>
+  
+  <Accordion title="Emergency Backup">
+    When normal backup tools are unavailable or failing, Trek provides an alternative backup method.
+  </Accordion>
+  
+  <Accordion title="Offline Database Transfer">
+    Copy databases without requiring MySQL to be running (RAW mode only).
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+### DUMP Mode Issues
+
+| Problem | Solution |
+|---------|----------|
+| Server gone away | Increase `max_allowed_packet` in my.cnf/my.ini |
+| Permission denied | Create user with full privileges |
+| Database not found | Check database name spelling |
+| Connection failed | Verify MySQL service is running |
+
+### RAW Mode Issues
+
+| Problem | Solution |
+|---------|----------|
+| Files locked | Stop MySQL service before operation |
+| Permission denied | Run Trek with administrator privileges |
+| Incomplete copy | Check disk space and permissions |
+| SSL errors after restore | Regenerate SSL certificates or disable SSL |
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Always Test" icon="flask">
+    Test backups on a separate system before relying on them for production recovery
+  </Card>
+  <Card title="Verify Backups" icon="check">
+    Always verify backup integrity by testing restoration
+  </Card>
+  <Card title="Document Versions" icon="book">
+    Keep track of MySQL versions for RAW mode compatibility
+  </Card>
+  <Card title="Regular Backups" icon="clock">
+    Don't wait for emergencies - establish regular backup schedules
+  </Card>
+</CardGroup>
+
+<Warning>
+  **Deprecated Tool:** While Trek still works, consider modern backup solutions for production environments. Trek is best suited for emergency recovery scenarios.
+</Warning>

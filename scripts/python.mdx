@@ -1,0 +1,435 @@
+---
+title: Python Utilities
+description: Python scripts for email scanning, Git operations, and link checking
+icon: python
+---
+
+## Overview
+
+Collection of Python utilities for automating common tasks including Git folder downloads, email scanning, and broken link detection. All scripts are tested on Ubuntu 22.04/24.04.
+
+## Prerequisites
+
+### Install Python 3
+
+```bash
+sudo apt update
+sudo apt install -y python3 python3-pip python-is-python3
+```
+
+### Common Dependencies
+
+Most scripts require additional Python packages. Install them as needed:
+
+```bash
+pip3 install requests beautifulsoup4
+```
+
+## Available Scripts
+
+### Email Scan
+
+Scan files and replace email addresses and URLs.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/python/emailscan.py
+chmod +x emailscan.py
+```
+
+**Usage:**
+```bash
+python emailscan.py
+```
+
+**Features:**
+- Scan files for email addresses
+- Replace BASE_URL in files
+- Replace TARGET_EMAIL in files
+- Batch processing
+- Recursive directory scanning
+
+**Configuration:**
+
+Edit the script to set your base URL and target email:
+
+```python
+BASE_URL = "https://example.com"
+TARGET_EMAIL = "contact@example.com"
+```
+
+**Example:**
+
+```bash
+# Scan current directory
+python emailscan.py
+
+# The script will:
+# 1. Find all text files
+# 2. Replace email addresses with TARGET_EMAIL
+# 3. Replace URLs with BASE_URL
+# 4. Create backup of modified files
+```
+
+<Tabs>
+  <Tab title="Basic Usage">
+    ```bash
+    # Edit configuration in script
+    nano emailscan.py
+    
+    # Run scanner
+    python emailscan.py
+    ```
+  </Tab>
+  <Tab title="Custom Directory">
+    ```python
+    # Modify script to scan specific directory
+    import os
+    
+    target_dir = "/path/to/scan"
+    for root, dirs, files in os.walk(target_dir):
+        # Scanning logic
+        pass
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### Git Folder Download
+
+**Replaces Subversion (SVN) for downloading specific GitHub/GitLab folders**
+
+Download specific folders from GitHub/GitLab repositories without cloning the entire repository.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+chmod +x gitfolder.py
+```
+
+**Usage:**
+```bash
+python gitfolder.py <GITHUB_OR_GITLAB_URL>
+```
+
+**Features:**
+- Download specific repository folders
+- Support for GitHub and GitLab
+- Replaces deprecated SVN method
+- Preserves directory structure
+- Progress indication
+
+**Examples:**
+
+<CodeGroup>
+```bash GitHub Example
+# Download entire scripts folder from maravento/vault
+python gitfolder.py https://github.com/maravento/vault/scripts
+
+# Download specific subfolder
+python gitfolder.py https://github.com/maravento/vault/scripts/bash
+```
+
+```bash GitLab Example
+# Download from GitLab repository
+python gitfolder.py https://gitlab.com/user/project/path/to/folder
+```
+
+```bash Custom Path
+# Download to specific local directory
+python gitfolder.py https://github.com/user/repo/folder /path/to/destination
+```
+</CodeGroup>
+
+**Why Use This Instead of SVN?**
+
+<Note>
+GitHub and GitLab have deprecated Subversion (SVN) support. This Python script provides the same functionality using the native Git API.
+</Note>
+
+**Previous SVN Method (Deprecated):**
+```bash
+# This no longer works
+svn export https://github.com/user/repo/trunk/folder
+```
+
+**New Method with gitfolder.py:**
+```bash
+# This works perfectly
+python gitfolder.py https://github.com/user/repo/folder
+```
+
+---
+
+### Link Check
+
+Scan websites for broken links.
+
+**Download:**
+```bash
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/python/linkcheck.py
+chmod +x linkcheck.py
+```
+
+**Usage:**
+```bash
+python linkcheck.py <URL>
+```
+
+**Features:**
+- Scan websites for broken links
+- HTTP/HTTPS support
+- Recursive link checking
+- Detailed error reporting
+- Export results to file
+
+**Dependencies:**
+```bash
+pip3 install requests beautifulsoup4
+```
+
+**Examples:**
+
+<CodeGroup>
+```bash Basic Scan
+# Check single website
+python linkcheck.py https://example.com
+```
+
+```bash Detailed Output
+# Check with verbose output
+python linkcheck.py https://example.com --verbose
+```
+
+```bash Export Results
+# Save results to file
+python linkcheck.py https://example.com > broken_links.txt
+```
+</CodeGroup>
+
+**Output Format:**
+
+```
+Scanning: https://example.com
+
+Broken Links Found:
+[404] https://example.com/missing-page.html
+[500] https://example.com/server-error
+[TIMEOUT] https://slow-server.com/page
+
+Working Links: 156
+Broken Links: 3
+Total Links Checked: 159
+```
+
+**Configuration Options:**
+
+You can modify the script to customize:
+
+```python
+# Maximum depth for recursive scanning
+MAX_DEPTH = 3
+
+# Request timeout (seconds)
+TIMEOUT = 10
+
+# User agent string
+USER_AGENT = "LinkChecker/1.0"
+
+# Ignore external links
+IGNORE_EXTERNAL = True
+```
+
+## Installation Script
+
+Quick installation of all Python utilities:
+
+```bash
+#!/bin/bash
+# Install Python utilities
+
+mkdir -p ~/scripts/python
+cd ~/scripts/python
+
+# Download all scripts
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/python/emailscan.py
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/python/gitfolder.py
+wget https://raw.githubusercontent.com/maravento/vault/master/scripts/python/linkcheck.py
+
+# Make executable
+chmod +x *.py
+
+# Install dependencies
+pip3 install requests beautifulsoup4
+
+echo "Python utilities installed successfully!"
+```
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Email Scanning" icon="envelope">
+    **Use Case**: Update all email addresses and URLs in documentation
+    
+    ```bash
+    # Configure your settings
+    nano emailscan.py
+    # Set BASE_URL and TARGET_EMAIL
+    
+    # Run on documentation directory
+    cd /path/to/docs
+    python ~/scripts/python/emailscan.py
+    ```
+  </Accordion>
+
+  <Accordion title="Partial Repository Downloads" icon="download">
+    **Use Case**: Download only the scripts folder from a large repository
+    
+    ```bash
+    # Instead of cloning 500MB repository
+    # Download only 5MB scripts folder
+    python gitfolder.py https://github.com/user/large-repo/scripts
+    ```
+    
+    **Benefits:**
+    - Saves bandwidth
+    - Faster downloads
+    - No need for full git clone
+  </Accordion>
+
+  <Accordion title="Website Maintenance" icon="globe">
+    **Use Case**: Regular link checking for website maintenance
+    
+    ```bash
+    # Create cron job for weekly checks
+    crontab -e
+    
+    # Add:
+    # 0 2 * * 1 python /path/to/linkcheck.py https://example.com > /var/log/linkcheck.log
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Usage
+
+### Combining Scripts
+
+Use multiple utilities together:
+
+```bash
+#!/bin/bash
+# Download, scan, and check links
+
+# 1. Download documentation folder
+python gitfolder.py https://github.com/project/docs/
+
+# 2. Update email addresses
+cd docs/
+python emailscan.py
+
+# 3. Check for broken links
+python linkcheck.py https://your-docs-site.com
+```
+
+### Automation Examples
+
+<Tabs>
+  <Tab title="Cron Job">
+    ```bash
+    # Add to crontab
+    crontab -e
+    
+    # Daily link check at 2 AM
+    0 2 * * * /usr/bin/python3 /home/user/scripts/linkcheck.py https://example.com >> /var/log/linkcheck.log 2>&1
+    ```
+  </Tab>
+  
+  <Tab title="Systemd Timer">
+    ```ini
+    # /etc/systemd/system/linkcheck.timer
+    [Unit]
+    Description=Daily Link Check
+    
+    [Timer]
+    OnCalendar=daily
+    Persistent=true
+    
+    [Install]
+    WantedBy=timers.target
+    ```
+  </Tab>
+  
+  <Tab title="Bash Script">
+    ```bash
+    #!/bin/bash
+    # automated-check.sh
+    
+    SITE="https://example.com"
+    LOG="/var/log/linkcheck-$(date +%Y%m%d).log"
+    
+    python3 /usr/local/bin/linkcheck.py "$SITE" > "$LOG"
+    
+    # Email if broken links found
+    if grep -q "Broken Links: [^0]" "$LOG"; then
+        mail -s "Broken Links Found" admin@example.com < "$LOG"
+    fi
+    ```
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="ImportError: No module named 'requests'">
+    **Solution:**
+    ```bash
+    pip3 install requests
+    # Or
+    sudo apt install python3-requests
+    ```
+  </Accordion>
+
+  <Accordion title="Permission Denied">
+    **Solution:**
+    ```bash
+    chmod +x script.py
+    # Or run with python directly
+    python3 script.py
+    ```
+  </Accordion>
+
+  <Accordion title="SSL Certificate Errors">
+    **Solution:**
+    ```bash
+    # Update CA certificates
+    sudo apt update
+    sudo apt install ca-certificates
+    
+    # Or use --no-verify option if available
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Requirements
+
+### System Requirements
+- Ubuntu 22.04 or 24.04 (or compatible Linux distribution)
+- Python 3.8 or higher
+- Internet connection
+
+### Python Packages
+```bash
+pip3 install requests beautifulsoup4 lxml
+```
+
+## License
+
+- [GPL-3.0](https://www.gnu.org/licenses/gpl.txt)
+- [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+<Warning>
+Always review script contents and test in a safe environment before running on production systems.
+</Warning>

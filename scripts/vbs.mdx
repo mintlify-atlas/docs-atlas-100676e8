@@ -1,0 +1,322 @@
+---
+title: VBScript Tools
+description: Windows automation scripts written in VBScript
+icon: file-code
+---
+
+## Overview
+
+VBScript utilities for Windows system automation and configuration. These scripts are tested on Windows 7, 10, and 11 (x64).
+
+<Note>
+VBScript is a legacy scripting language still supported in modern Windows for backward compatibility. For new projects, consider using PowerShell instead.
+</Note>
+
+## Prerequisites
+
+- Windows 7, 10, or 11 (x64)
+- Administrator privileges (for most operations)
+- Windows Script Host (WSH) enabled (enabled by default)
+
+## Available Scripts
+
+### Autorun Disable
+
+Disable Windows AutoRun/AutoPlay functionality to enhance security.
+
+**Download:**
+```batch
+curl -o autorun.vbs https://raw.githubusercontent.com/maravento/vault/master/scripts/vbs/autorun.vbs
+```
+
+**Usage:**
+
+<Tabs>
+  <Tab title="GUI Mode">
+    1. Download the script
+    2. Right-click `autorun.vbs`
+    3. Select "Open with" → "Microsoft Windows Based Script Host"
+    
+    Or simply double-click the file.
+  </Tab>
+  
+  <Tab title="Command Line">
+    ```batch
+    REM Run from Command Prompt
+    cscript autorun.vbs
+    
+    REM Or with Windows Script Host
+    wscript autorun.vbs
+    ```
+  </Tab>
+  
+  <Tab title="Administrator">
+    ```batch
+    REM Run as Administrator (recommended)
+    REM Right-click Command Prompt → Run as administrator
+    cscript autorun.vbs
+    ```
+  </Tab>
+</Tabs>
+
+**Features:**
+
+- Disables AutoRun for all drives
+- Disables AutoPlay for removable media
+- Registry-based configuration
+- Improves security against USB-based attacks
+- Prevents automatic execution of malware
+
+**What It Does:**
+
+<AccordionGroup>
+  <Accordion title="Security Enhancement" icon="shield">
+    Prevents automatic execution of programs when removable media (USB drives, CDs, DVDs) is inserted.
+    
+    **Protection Against:**
+    - USB-based malware
+    - Auto-executing viruses
+    - Unwanted program launches
+    - Social engineering attacks
+  </Accordion>
+
+  <Accordion title="Registry Modifications" icon="gear">
+    The script modifies the following registry keys:
+    
+    ```
+    HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    ```
+    
+    Sets:
+    - `NoDriveTypeAutoRun` = 255 (disable all drive types)
+    - `NoAutorun` = 1 (disable autorun)
+  </Accordion>
+
+  <Accordion title="Affected Devices" icon="usb">
+    Disables AutoRun/AutoPlay for:
+    - USB flash drives
+    - External hard drives
+    - CD/DVD drives
+    - Memory cards
+    - Network drives
+  </Accordion>
+</AccordionGroup>
+
+## Script Details
+
+### How VBScript Works on Windows
+
+VBScript files (`.vbs`) are executed by Windows Script Host (WSH), which provides two execution environments:
+
+- **wscript.exe**: GUI mode (default when double-clicking)
+- **cscript.exe**: Console mode (for command-line usage)
+
+### Execution Methods
+
+<CodeGroup>
+```batch Double-Click
+REM Simply double-click the .vbs file
+REM Runs in GUI mode using wscript.exe
+```
+
+```batch Console Mode
+REM Run in command prompt for text output
+cscript autorun.vbs
+```
+
+```batch GUI Mode
+REM Explicitly use Windows Script Host
+wscript autorun.vbs
+```
+
+```batch Elevated Privileges
+REM Run as Administrator
+REM 1. Right-click Command Prompt
+REM 2. Select "Run as administrator"
+REM 3. Execute:
+cscript autorun.vbs
+```
+</CodeGroup>
+
+## Security Considerations
+
+<Warning>
+**Important Security Notes:**
+
+1. **Review Before Execution**: Always review VBScript content before running
+2. **Administrator Rights**: Most system modifications require admin privileges
+3. **Backup Registry**: Create a registry backup before running system modification scripts
+4. **Test Environment**: Test scripts in a non-production environment first
+</Warning>
+
+### Why Disable AutoRun?
+
+AutoRun/AutoPlay was a common attack vector:
+
+- **Malware Propagation**: Infected USB drives could auto-execute malware
+- **Social Engineering**: Attackers could disguise malware as legitimate autorun content
+- **Worm Spreading**: Network worms used AutoRun to spread across systems
+
+<Note>
+Microsoft has disabled AutoRun by default in Windows 7 and later for removable drives, but AutoPlay may still be enabled. This script ensures both are disabled.
+</Note>
+
+## Advanced Usage
+
+### Running at System Startup
+
+<Tabs>
+  <Tab title="Task Scheduler">
+    ```batch
+    REM Create scheduled task to run at startup
+    schtasks /create /tn "Disable AutoRun" /tr "cscript C:\path\to\autorun.vbs" /sc onstart /ru System
+    ```
+  </Tab>
+  
+  <Tab title="Startup Folder">
+    ```batch
+    REM Copy to startup folder (runs for each user)
+    copy autorun.vbs "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\"
+    ```
+  </Tab>
+  
+  <Tab title="Group Policy">
+    For enterprise environments:
+    1. Open Group Policy Editor (gpedit.msc)
+    2. Navigate to: Computer Configuration → Windows Settings → Scripts
+    3. Add autorun.vbs to Startup Scripts
+  </Tab>
+</Tabs>
+
+### Verifying AutoRun Status
+
+Check if AutoRun is disabled:
+
+```batch
+REM Query registry value
+reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun
+reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun
+```
+
+Expected output:
+```
+NoDriveTypeAutoRun    REG_DWORD    0xff (255)
+```
+
+## Reverting Changes
+
+To re-enable AutoRun (not recommended):
+
+```batch
+REM Delete registry values to restore defaults
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun /f
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoAutorun /f
+reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun /f
+```
+
+## Alternatives to VBScript
+
+For modern Windows automation, consider:
+
+<CardGroup cols={2}>
+  <Card title="PowerShell" icon="terminal">
+    Modern, powerful scripting language built into Windows
+    
+    ```powershell
+    # PowerShell equivalent
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -Value 255
+    ```
+  </Card>
+  
+  <Card title="Batch Scripts" icon="file-code">
+    Simple command-line scripts for basic automation
+    
+    ```batch
+    REM Batch equivalent
+    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun /t REG_DWORD /d 255 /f
+    ```
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Script Won't Run">
+    **Possible Causes:**
+    - Windows Script Host disabled
+    - Antivirus blocking execution
+    - File association broken
+    
+    **Solutions:**
+    ```batch
+    REM Enable Windows Script Host
+    reg add "HKCU\Software\Microsoft\Windows Script Host\Settings" /v Enabled /t REG_DWORD /d 1 /f
+    
+    REM Check file association
+    assoc .vbs
+    ftype VBSFile
+    ```
+  </Accordion>
+
+  <Accordion title="Access Denied Errors">
+    **Solution:**
+    - Run Command Prompt as Administrator
+    - Use elevated privileges
+    
+    ```batch
+    REM Right-click cmd.exe → "Run as administrator"
+    cscript autorun.vbs
+    ```
+  </Accordion>
+
+  <Accordion title="Changes Not Taking Effect">
+    **Solution:**
+    - Log off and log back in
+    - Restart Windows Explorer
+    - Reboot the system
+    
+    ```batch
+    REM Restart Explorer
+    taskkill /f /im explorer.exe
+    start explorer.exe
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+1. **Code Review**: Always review VBScript contents before execution
+2. **Backup**: Create system restore point before running system modification scripts
+3. **Testing**: Test scripts in virtual machines or test environments first
+4. **Documentation**: Keep notes of what scripts do and when they were run
+5. **Updates**: Check for script updates periodically
+
+## Additional Resources
+
+<CardGroup cols={2}>
+  <Card title="Windows Script Host" icon="book">
+    Learn more about WSH and VBScript fundamentals
+  </Card>
+  
+  <Card title="Registry Editor" icon="database">
+    Understanding Windows Registry for advanced configuration
+  </Card>
+  
+  <Card title="Security Hardening" icon="shield">
+    Windows security best practices and hardening guides
+  </Card>
+  
+  <Card title="PowerShell Migration" icon="arrow-right">
+    Migrate from VBScript to modern PowerShell scripts
+  </Card>
+</CardGroup>
+
+## License
+
+- [GPL-3.0](https://www.gnu.org/licenses/gpl.txt)
+- [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+<Warning>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Test scripts in a safe environment before deploying to production systems.
+</Warning>

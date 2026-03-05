@@ -1,0 +1,106 @@
+---
+title: 'WinZenity'
+description: 'Zenity Portable for Windows - GUI dialog tool for Windows scripts'
+icon: 'window'
+---
+
+<Warning>
+**Deprecated Project**
+
+This project has reached End-of-Life (EOL) and End-of-Support (EOS). It is no longer maintained or updated.
+</Warning>
+
+## Overview
+
+**WinZenity** (Zen Dialogs for Windows) is a software that allows generating simple dialogues as a wrapper, designed as a substitute for gdialog for GNOME and console dialog. It uses the GTK+ and GLADE libraries and has been ported to run on Windows Systems.
+
+WinZenity is a Windows port of the popular Linux [Zenity](https://en.wikipedia.org/wiki/Zenity) tool, enabling Windows batch scripts and command-line tools to display graphical dialog boxes for user interaction.
+
+## Usage in Vault Tools
+
+WinZenity serves as a critical GUI component in several Maravento Vault tools, providing user-friendly dialog interfaces for Windows-based utilities:
+
+<CardGroup cols={3}>
+  <Card title="BlackUSB" icon="usb" href="/security/blackusb">
+    USB device whitelist and blocking tool
+  </Card>
+  <Card title="Dextroyer" icon="shield-halved" href="/security/dextroyer">
+    Security scripts package for Windows
+  </Card>
+  <Card title="ITSM" icon="server" href="/resources/itsm">
+    IT Service Management installer
+  </Card>
+</CardGroup>
+
+These tools use WinZenity to display:
+- Selection dialogs for choosing options
+- Progress indicators during operations
+- Information and warning messages
+- User input prompts
+
+## Technical Specifications
+
+<AccordionGroup>
+  <Accordion title="Data Sheet" icon="table">
+    | Property | Details |
+    |----------|---------|
+    | **File** | [zenity.exe (.zip)](https://github.com/maravento/vault/raw/master/winzenity/zenity.zip) (Win32) |
+    | **Size** | 2 MB |
+    | **Operating Systems** | Windows XP/7/8/10 |
+    | **Version** | 3.6 |
+    | **Architecture** | Win32 (x86) |
+  </Accordion>
+
+  <Accordion title="Dependencies" icon="box">
+    WinZenity includes the following libraries:
+    - **GTK+** - GUI toolkit
+    - **GLADE** - Interface designer library
+  </Accordion>
+</AccordionGroup>
+
+## Original Project
+
+WinZenity is based on the GNOME Zenity project, originally developed for Linux systems.
+
+| Property | Details |
+|----------|---------|
+| **Original Developers** | Glynn Foster (glynn.foster@sun.com)<br/>Lucas Rocha (lucasr@gnome.org) |
+| **Released** | 2013 |
+| **Platform** | Originally GNOME/Linux |
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="Source Code" icon="code" href="https://github.com/maravento/vault/raw/master/winzenity/zenity-3.6.0_src.7z">
+    Download WinZenity 3.6.0 source code
+  </Card>
+  <Card title="Help Documentation" icon="circle-question" href="https://github.com/maravento/vault/raw/master/winzenity/zenityhelp.txt">
+    View command-line help reference
+  </Card>
+</CardGroup>
+
+## References
+
+<Tip>
+For more information about Zenity and its Windows port, see the following resources:
+</Tip>
+
+- [GNOME Zenity GitHub Repository](https://github.com/GNOME/zenity)
+- [Zenity Source Archives](http://ftp.gnome.org/pub/gnome/sources/zenity)
+- [Zenity User Guide](https://help.gnome.org/users/zenity/stable/index.html.en)
+- [Zenity Wiki](https://wiki.gnome.org/action/show/Projects/Zenity)
+- [Wikipedia: Zenity and WinZenity](https://en.wikipedia.org/wiki/Zenity#Cross-platform_compatibility)
+- [OpenSourcePack Process Documentation](https://opensourcepack.blogspot.com/2013/02/zenity-360-portable.html)
+- [Original Repository (Archived)](https://web.archive.org/web/20160805164634/https://code.google.com/p/osspack32)
+
+## License
+
+<Info>
+WinZenity is licensed under the GNU General Public License v3.0 (GPL-3.0).
+</Info>
+
+[![GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl.txt)
+
+## Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -1,0 +1,222 @@
+---
+title: Dextroyer
+description: Experimental malware removal toolkit for Windows
+icon: shield-virus
+---
+
+Dextroyer (dxt) is an experimental package of security scripts for Windows. It contains highly destructive tools designed to remove malware, classified as potentially dangerous by some antivirus solutions.
+
+<Warning>
+  **Deprecated Status**: This project has reached End-of-Life (EOL) / End-of-Support (EOS). No longer supported or updated.
+
+  **Use at Your Own Risk**: Contains highly destructive tools that can harm your system if used incorrectly. Some tools are flagged as malware by antivirus software ([VirusTotal report](https://www.virustotal.com/en/file/63c60e798a5738e10cb6fda1975c360d9889b4c437c2c04bd20ec967926c9b7e/analysis/1551278322/)).
+</Warning>
+
+## Download
+
+| File | OS Compatibility | Size | Unzip Password |
+| --- | --- | --- | --- |
+| [Dextroyer.exe (.zip)](https://github.com/maravento/vault/raw/master/dextroyer/Dextroyer.zip) | Windows 7/8/10 x86 x64 | 13.4 MB | dextroyer |
+
+## Installation
+
+<Steps>
+  <Step title="Prepare your system">
+    Before running Dextroyer:
+    1. Disable your Antivirus, Antimalware, SmartScreen, or any other security solution
+    2. Close all windows
+    3. Verify the date and time on your PC is correct
+  </Step>
+
+  <Step title="Extract and run">
+    1. Unzip `Dextroyer.exe (.zip)` to your desktop using password: `dextroyer`
+    2. Execute with double-click (accept privileged execution)
+    3. Follow the on-screen instructions
+  </Step>
+</Steps>
+
+<Note>
+  **Execution Issues**: Some malware (like Neshta, Ground, etc.) prevent Dextroyer from running with privileges. If double-clicking doesn't work or you get a message related to the ".exe", right-click on Dextroyer and select "Run as Administrator".
+</Note>
+
+## Tools Included
+
+### Cleaners
+
+#### Clean USB
+
+Removes malware from USB mass storage devices (USB flash drives, external drives, SD Cards).
+
+<Warning>
+  **Data Loss Risk**: Clean USB will remove:
+  - All executable files (.bat, .bin, .com, .cmd, .db, .exe, .vbs, .dll, etc.)
+  - Files encrypted by ransomware
+  - Software stored on USB devices
+
+  See [Most common file types used by Malware](https://www.virustotal.com/gui/stats) for reference.
+</Warning>
+
+<Note>
+  **Best Practice**: Run the USB Backup or USB Sync tools (in the Backup Tools menu) before performing any cleaning operations.
+
+  **Important**: Run "Clean PC" before "Clean USB" to ensure the Windows PC is not infected, preventing a disinfection-infection loop.
+</Note>
+
+#### Clean PC
+
+Cleans malware from your PC. Press the "Clean PC" button to begin. When finished, it will restart your PC automatically.
+
+### PC Tools
+
+#### Autorun Killer
+
+Deactivates the autorun feature for drives on your PC.
+
+<Steps>
+  <Step title="Run Autorun Killer">
+    Located in the System Tools menu. Execute before performing any cleaning procedures.
+  </Step>
+
+  <Step title="Restart system">
+    After disabling autorun, restart the PC for changes to take effect.
+  </Step>
+</Steps>
+
+#### SysRestore
+
+Restores compromised Windows system files.
+
+<Note>
+  **When to Use**: If Clean PC (in Normal or Safe Mode) doesn't produce expected results, system files may be compromised. Run SysRestore in Safe Mode.
+
+  **After Running**: Execute Autorun Killer again after using SysRestore to deactivate the autostart of units.
+</Note>
+
+#### SafeBoot
+
+Easily boot into Safe Mode or return to Normal Mode.
+
+**Manual Safe Mode Access**:
+- **Windows 7**: Start PC while pressing F8 key
+- **Windows 8+**: Press Shift key and click the reset button
+
+**Using SafeBoot Tool** (in System Tools menu):
+- Press "Safe Mode" button to restart in Safe Mode
+- Press "Normal Mode" button to return to normal startup
+
+#### Fix Print
+
+Repairs the print queue when malware blocks it and printer icons disappear.
+
+#### Regedit Back
+
+Creates a backup of the Windows Registry.
+
+Backup location: `c:\Backup\RegBackup_YYYY.MM.DD-HH.MM.SS.reg`
+
+Example: `c:\Backup\RegBackup_2016.07.05-12.53.22.reg`
+
+### USB Tools
+
+#### BlackUSB
+
+Blocks unauthorized devices: USB, HID, HDC, Bluetooth, IEEE, SmartCardReader, PCMCIA, Printers, SCSI, RAID, etc. Cleans previous device installations, rescans connected devices, and blocks new ones.
+
+<Warning>
+  **Before You Continue**:
+  - **Do not press BLOCK button twice in a row** - Will block ALL USB/HID devices
+  - **GPO Policies** - If you have defined Group Policy Objects, they will be rewritten. Make a GPO backup first
+</Warning>
+
+**Adding New Devices**:
+1. Press RESTORE button to remove restrictions
+2. Connect the new device
+3. Press BLOCK button
+
+**Whitelist Report**: After executing BLOCK, a `whitelist.txt` file appears on your desktop containing excluded USB/HID devices. Deleted when using RESTORE.
+
+#### USB Ports Control
+
+Disables and enables USB ports for mass storage devices. Does not affect webcams, keyboards, mice, printers, cameras, etc.
+
+#### USB Write Tool
+
+Enables and disables read or write access for USB devices.
+
+#### USB Sync
+
+Synchronizes data in mirror mode between a USB device and the `USBsync` folder (e.g., `c:\USBsync`).
+
+**Options**:
+- **BACKUP**: Copy from USB to PC
+- **RESTORE**: Copy from PC to USB
+
+<Warning>
+  **Mirror Mode**: Changes made after executing BACKUP or RESTORE will be eliminated in the next sync. If no option is selected, the window closes in 10 seconds.
+</Warning>
+
+#### USB Backup
+
+Creates a backup of USB content to your PC.
+
+Backup location: `c:\Backup\YYYY.MM.DD-HH.MM.SS\`
+
+Example: `c:\Backup\2016.04.21-20.13.55\`
+
+#### USB Selector
+
+Identifies the drive letter of connected USB storage devices. Selection must be confirmed by manually entering the letter (uppercase or lowercase, without dots).
+
+<Warning>
+  **Detection Issues**: In some cases, Windows may not correctly recognize USB devices. To check how Windows detects your device:
+
+  ```cmd
+  wmic logicaldisk get caption,description,name,drivetype,providername,volumename
+  ```
+
+  **Drive Types**:
+  - 0 = Unknown
+  - 1 = No Root Directory
+  - 2 = Removable Disk (correctly detected for USB)
+  - 3 = Local Fixed Disk (incorrectly detected - USB selector won't detect)
+  - 4 = Network Drive
+  - 5 = Compact Disc
+  - 6 = RAM Disk
+
+  If your USB appears as "Local Fixed Disk" instead of "Removable Disk", the USB selector will not detect it.
+</Warning>
+
+## Compatibility
+
+<Warning>
+  **Limitations**:
+  - Some tools may not work properly in VMs, USB devices with non-traditional formats, or multi-reading units
+  - On USB devices with NTFS partitions, Dextroyer cannot access "System Volume Information" and "$RECYCLE.BIN" folders (not applicable for FAT/FAT32/ExFAT)
+  - Can cause irreparable damage if executed on incompatible operating systems
+  - USB Sync and USB Backup use [Robust File Copy](https://en.wikipedia.org/wiki/Robocopy), which has limitations and may not achieve desired results
+</Warning>
+
+## Used Tools
+
+- [Autoplay Indigo Rose](https://www.indigorose.com/autoplay-media-studio/)
+- [Helge Klein SetACL](https://helgeklein.com/download/)
+- [make-sfx 74cz](http://74.cz/es/make-sfx/index.php)
+- [Ransomware Database](https://docs.google.com/spreadsheets/u/1/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml#)
+- [kinomakino ransomware_file_extensions](https://raw.githubusercontent.com/kinomakino/ransomware_file_extensions/master/extensions.csv)
+- [Resource Hacker](http://www.angusj.com/resourcehacker/)
+- [Rkill BleepingComputer](https://www.bleepingcomputer.com/download/rkill/)
+- [Robust File Copy](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy)
+- [SteelWerX](https://fstaal01.home.xs4all.nl/swreg-us.html)
+- [TCC Jpsoft](https://jpsoft.com/products/tcc-cmd-prompt.html)
+- [unzip mkssoftware](https://www.mkssoftware.com/docs/man1/unzip.1.asp)
+- [WinZenity](https://github.com/maravento/vault/tree/master/winzenity)
+
+## License
+
+Dextroyer is licensed under:
+- GPL-3.0
+- CC BY-SA 4.0
+
+## Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
